@@ -124,7 +124,7 @@ u64      ulHash64       = "hash_me"_JOAAT64;   // Compile-Time JOAAT64 for stati
 #include <ctninja/ctninja.h>
 
 u32      ulHash32       = ctninja::joaat("hash_me");     // Runtime JOAAT for dynamic strings
-u64      ulHash64       = ctninja::joaat64(L"hash_me");  // Runtime JOAAT64 for dynamic strings
+u64      ulHash64       = ctninja::wjoaat64(L"hash_me"); // Runtime JOAAT64 for dynamic strings
 ```
 
 

@@ -3,7 +3,7 @@
 
 	This file is part of CTNinja
 
-	CTNinja is free software; See LICENSE.txt or https://opensource.org/license/mit
+	CTNinja is free software; See LICENSE.MD or https://opensource.org/license/mit
 */
 
 #ifndef _CTNINJA_XORSTR_H_
