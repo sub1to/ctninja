@@ -17,7 +17,7 @@
 - 🔒 **Compile-Time String Encryption**  
   Obfuscate strings at compile-time using the `_X` operator to avoid plaintext exposure in binaries.  
   ```cpp
-  constexpr auto str = "SensitiveData"_X; // Encrypted at compile-time
+  auto str = "SensitiveData"_X; // Encrypted at compile-time
   printf(str.c_str());
   ```
   
@@ -75,6 +75,30 @@ CTNinja is built using **Premake5**. Follow these steps:
 
 printf("Hello, Malware Analyst"_X.c_str());
 ```
+
+⚠️ **Critical**:  
+Do not call `c_str()` multiple times on the same object!
+
+The data is decrypted on the stack when you call `c_str()`. Calling it again will re-encrypt the data.
+
+- ❌
+   ```cpp
+   auto str = "SensitiveData"_X; // Encrypted at compile-time
+   printf(str.c_str());
+   printf(str.c_str());
+   ```
+- ✅
+   ```cpp
+   auto secstr = "SensitiveData"_X; // Encrypted at compile-time
+   auto str = secstr.c_str();
+   printf(str);
+   printf(str);
+   ```
+- ✅
+   ```cpp
+   printf("SensitiveData"_X.c_str());
+   printf("SensitiveData"_X.c_str());
+   ```
 
 ### 2. Resolve Modules/Exports via PEB  
 ```cpp
