@@ -55,10 +55,9 @@ namespace ctninja
 					r ^= r >> 2;
 				}
 
-				// Make sure we have enough entropy
-				if((r & 0xF0) == 0){
-					r |= 0x70;
-				}
+				r ^= r >> 4;
+				r += r << 5;
+				r ^= r >> 7;
 
 				return r;
 			}

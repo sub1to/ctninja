@@ -51,5 +51,67 @@ namespace xorstr
 
 			return true;
 		});
+
+		REGISTER_TEST("ctninja::xorstr generate_global_key", [](UNIT_TEST* test)->bool{
+			// The key_char generation needs to give a good distribution, even if the input characters are all the same
+
+			auto secstr_A = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAA"_X;
+			auto secstr_B = "AAAAAAAAAAAAAABAAAAAAAAAAAAAA"_X;
+			auto secstr_C = "AAAAAABAAAAAAABAAAAAAAAAAAAAA"_X;
+			auto secstr_D = "AAAAAABAAAAAAABAAAAAAAABAAAAA"_X;
+			auto secstr_E = "ABAAAABAAAAAAABAAAAAAAABAAAAA"_X;
+			auto secstr_F = "ABAAAABAAAAAAABAAAAABAABAAAAA"_X;
+			auto secstr_G = "ABAAAABABAAAAABAAAAAAAABAAAAA"_X;
+			auto secstr_H = "ABAAAABABAAAAABAAAABAAABAAAAA"_X;
+			auto secstr_I = "ABC"_X;
+			auto secstr_J = "ACD"_X;
+			auto secstr_K = "ASDF"_X;
+			auto secstr_L = "RDCF"_X;
+			auto secstr_M = "asdf"_X;
+			auto secstr_N = "jgg"_X;
+			auto secstr_O = "dfg"_X;
+			auto secstr_P = "dfgdfg"_X;
+			auto secstr_Q = "aaaa"_X;
+			auto secstr_R = "ffdd"_X;
+			auto secstr_S = "asdfasdf"_X;
+			auto secstr_T = "ghjk"_X;
+			auto secstr_U = "fghj"_X;
+			auto secstr_V = "vbnm"_X;
+			auto secstr_W = "rtyudfghdfgh"_X;
+			auto secstr_X = "ghjk"_X;
+			auto secstr_Y = "ghdfhdfghdfghdfgh"_X;
+			auto secstr_Z = "fhgjsadfas"_X;
+
+			/*
+			printf_s("%02x\n", secstr_A.m_globalkey);
+			printf_s("%02x\n", secstr_B.m_globalkey);
+			printf_s("%02x\n", secstr_C.m_globalkey);
+			printf_s("%02x\n", secstr_D.m_globalkey);
+			printf_s("%02x\n", secstr_E.m_globalkey);
+			printf_s("%02x\n", secstr_F.m_globalkey);
+			printf_s("%02x\n", secstr_G.m_globalkey);
+			printf_s("%02x\n", secstr_H.m_globalkey);
+			printf_s("%02x\n", secstr_I.m_globalkey);
+			printf_s("%02x\n", secstr_J.m_globalkey);
+			printf_s("%02x\n", secstr_K.m_globalkey);
+			printf_s("%02x\n", secstr_L.m_globalkey);
+			printf_s("%02x\n", secstr_M.m_globalkey);
+			printf_s("%02x\n", secstr_N.m_globalkey);
+			printf_s("%02x\n", secstr_O.m_globalkey);
+			printf_s("%02x\n", secstr_P.m_globalkey);
+			printf_s("%02x\n", secstr_Q.m_globalkey);
+			printf_s("%02x\n", secstr_R.m_globalkey);
+			printf_s("%02x\n", secstr_S.m_globalkey);
+			printf_s("%02x\n", secstr_T.m_globalkey);
+			printf_s("%02x\n", secstr_U.m_globalkey);
+			printf_s("%02x\n", secstr_V.m_globalkey);
+			printf_s("%02x\n", secstr_W.m_globalkey);
+			printf_s("%02x\n", secstr_X.m_globalkey);
+			printf_s("%02x\n", secstr_Y.m_globalkey);
+			printf_s("%02x\n", secstr_Z.m_globalkey);
+			//*/
+
+			return true;
+		});
 	}
 }
