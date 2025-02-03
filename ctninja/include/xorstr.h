@@ -65,13 +65,13 @@ namespace ctninja
 
 			constexpr char enc_char(char c, std::size_t s)
 			{
-				char key = static_cast<char>(((c << 3) | (c >> 5)) + (s | 1) * 31);
+				char key = static_cast<char>(((c << 3) | (c >> 5)) + (s + 1) * 31);
 				return c ^ key ^ m_globalkey;
 			}
 
 			constexpr char key_char(char c, std::size_t s)
 			{
-				return static_cast<char>(((c << 3) | (c >> 5)) + (s | 1) * 31);
+				return static_cast<char>(((c << 3) | (c >> 5)) + (s + 1) * 31);
 			}
 
 			char dec_char(char c, std::size_t s)
