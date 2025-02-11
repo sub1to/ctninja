@@ -108,6 +108,13 @@ typedef int (__cdecl* fpvswprintf_s)(
     va_list argptr
     );
 
+typedef int (__cdecl* fp_vsnprintf)(
+   char *buffer,
+   size_t count,
+   const char *format,
+   va_list argptr
+);
+
 
 
 
@@ -233,6 +240,19 @@ typedef HANDLE (WINAPI* fpOpenProcess)(
     DWORD dwProcessId
     );
 
+typedef HANDLE (__stdcall* fpFindFirstFileA)(
+  LPCSTR             lpFileName,
+  LPWIN32_FIND_DATAA lpFindFileData
+);
+
+typedef BOOL (__stdcall* fpFindNextFileA)(
+  HANDLE             hFindFile,
+  LPWIN32_FIND_DATAA lpFindFileData
+);
+
+typedef BOOL (__stdcall* fpFindClose)(
+  HANDLE hFindFile
+);
 
 
 
