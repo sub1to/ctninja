@@ -23,15 +23,19 @@ namespace ctninja
 	// ntdll should always be loaded.
 	bool check_msvcrt()
 	{
-		long flags;
+		long		flags;
+		uint32_t	errmod;
 			
+		errmod	= 0;
 		flags	= _InterlockedOr(&m_msvcrt, MSVCRT_FLAG_RUN);
+
 		if(flags & MSVCRT_FLAG_RUN){
 			if(flags & MSVCRT_FLAG_LOADED){
 				return true;
 			}
 
 			if(flags & MSVCRT_FLAG_FAILED){
+				xport::set_last_error(xport::IMERR_NO_MODULE, "msvcrt.dll"_JOAAT, 0);
 				return false;
 			}
 
@@ -46,6 +50,7 @@ namespace ctninja
 			}
 
 			flags	= _InterlockedOr(&m_msvcrt, MSVCRT_FLAG_FAILED);
+			xport::set_last_error(xport::IMERR_NO_MODULE, "msvcrt.dll"_JOAAT, 0);
 			return false;
 		}
 
@@ -54,10 +59,14 @@ namespace ctninja
 			return true;
 		}
 			
-			
 		if(!$$(Kernel32.dll, LoadLibraryA, "msvcrt.dll"_X.c_str())){
 			flags = _InterlockedOr(&m_msvcrt, MSVCRT_FLAG_FAILED);
 			return false;
+		}
+			
+		// reset the error for msvcrt not being loaded, because it will be loaded now.
+		if(xport::get_last_error(&errmod) == xport::IMERR_NO_MODULE && errmod == "msvcrt.dll"_JOAAT){
+			xport::set_last_error(0, 0, 0);
 		}
 
 		flags = _InterlockedOr(&m_msvcrt, MSVCRT_FLAG_LOADED);
@@ -67,7 +76,9 @@ namespace ctninja
 	extern "C" {
 		int $printf(const char* fmt, ...)
 		{
-			check_msvcrt();
+			if(!check_msvcrt()){
+				return 0;
+			}
 
 			int ret;
 			va_list args;
@@ -91,7 +102,9 @@ namespace ctninja
 
 		int $wprintf_s(const wchar_t* fmt, ...)
 		{
-			check_msvcrt();
+			if(!check_msvcrt()){
+				return 0;
+			}
 
 			int ret;
 			va_list args;
