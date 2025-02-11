@@ -115,6 +115,9 @@ typedef int (__cdecl* fp_vsnprintf)(
    va_list argptr
 );
 
+typedef size_t (*fpstrlen)(
+    const char* str
+);
 
 
 

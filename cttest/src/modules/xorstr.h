@@ -12,6 +12,13 @@ namespace xorstr
 {
 	void	reg()
 	{
+		REGISTER_TEST("ctninja::$strlen", [](UNIT_TEST* test)->bool{
+			BCASS(ctninja::$strlen("abcd") == 4);
+			BCASS(ctninja::$strlen("abcdffff") == 8);
+			BCASS(ctninja::$strlen("abcd"_X.c_str()) == 4);
+			return true;
+		});
+
 		REGISTER_TEST("ctninja::xorstr", [](UNIT_TEST* test)->bool{
 			BCASS(strcmp("abcd", "abcd"_X.c_str()) == 0);
 			return true;

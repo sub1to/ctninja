@@ -92,10 +92,11 @@ namespace ctninja
 	}
 
 	extern "C" {
-		int $printf(const char* fmt, ...);
-		int $sprintf_s(char* buf, size_t buf_size, const char* fmt, ...);
-		int $wprintf_s(const wchar_t* fmt, ...);
-		int $swprintf_s(wchar_t* buf, size_t buf_size, const wchar_t* fmt, ...);
+		size_t	$strlen(const char* str);
+		int		$printf(const char* fmt, ...);
+		int		$sprintf_s(char* buf, size_t buf_size, const char* fmt, ...);
+		int		$wprintf_s(const wchar_t* fmt, ...);
+		int		$swprintf_s(wchar_t* buf, size_t buf_size, const wchar_t* fmt, ...);
 	}
 }
 

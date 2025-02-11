@@ -74,6 +74,11 @@ namespace ctninja
 	}
 
 	extern "C" {
+		size_t $strlen(const char* str)
+		{
+			return $$(ntdll.dll, strlen, str);
+		}
+
 		int $printf(const char* fmt, ...)
 		{
 			if(!check_msvcrt()){
