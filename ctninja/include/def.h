@@ -257,6 +257,22 @@ typedef BOOL (__stdcall* fpFindClose)(
   HANDLE hFindFile
 );
 
+typedef DWORD (WINAPI* fpGetModuleFileNameA)(
+  HMODULE hModule,
+  LPSTR lpFilename,
+  DWORD nSize
+);
+
+typedef BOOL (WINAPI* fpDeviceIoControl)(
+    HANDLE       hDevice,
+    DWORD        dwIoControlCode,
+    LPVOID       lpInBuffer,
+    DWORD        nInBufferSize,
+    LPVOID       lpOutBuffer,
+    DWORD        nOutBufferSize,
+    LPDWORD      lpBytesReturned,
+    LPOVERLAPPED lpOverlapped
+    );
 
 
 
@@ -374,6 +390,250 @@ typedef int (__cdecl* fpvprintf_s)(
 typedef int (__cdecl* fpvwprintf_s)(
     const wchar_t *format,
     va_list argptr
+    );
+
+
+
+
+// user32 functions
+typedef BOOL (WINAPI* fpGetCursorPos)(
+    LPPOINT lpPoint
+    );
+
+typedef HDC (WINAPI* fpGetDC)(
+    HWND hWnd
+    );
+
+typedef int (WINAPI* fpReleaseDC)(
+    HWND hWnd,
+    HDC hDC
+    );
+
+
+
+
+// Gdi32 functions
+typedef HBITMAP (WINAPI* fpCreateBitmap)(
+    int        nWidth,
+    int        nHeight,
+    UINT       nPlanes,
+    UINT       nBitCount,
+    const VOID *lpBits
+    );
+
+typedef HBITMAP (WINAPI* fpCreateBitmapIndirect)(
+    const BITMAP *pbm
+    );
+
+typedef HBRUSH (WINAPI* fpCreateBrushIndirect)(
+    const LOGBRUSH *plbrush
+    );
+
+typedef HBITMAP (WINAPI* fpCreateCompatibleBitmap)(
+    HDC hdc,
+    int cx,
+    int cy
+    );
+
+typedef HBITMAP (WINAPI* fpCreateDiscardableBitmap)(
+    HDC hdc,
+    int cx,
+    int cy
+    );
+
+typedef HDC (WINAPI* fpCreateCompatibleDC)(
+    HDC hdc
+    );
+
+typedef HGDIOBJ (WINAPI* fpSelectObject)(
+    HDC     hdc,
+    HGDIOBJ h
+    );
+
+typedef BOOL (WINAPI* fpBitBlt)(
+    HDC hdc,
+    int x,
+    int y,
+    int cx,
+    int cy,
+    HDC hdcSrc,
+    int x1,
+    int y1,
+    DWORD rop
+    );
+
+typedef int (WINAPI* fpGetDIBits)(
+    HDC hdc,
+    HBITMAP hbm,
+    UINT start,
+    UINT cLines,
+    LPVOID lpvBits,
+    LPBITMAPINFO lpbmi,
+    UINT usage
+    );
+
+typedef BOOL (WINAPI* fpDeleteObject)(
+    HGDIOBJ ho
+    );
+
+typedef BOOL (WINAPI* fpDeleteDC)(
+    HDC hdc
+    );
+
+
+
+
+
+
+// Advapi32 functions
+typedef SC_HANDLE (WINAPI* fpOpenSCManagerA)(
+    LPCSTR lpMachineName,
+    LPCSTR lpDatabaseName,
+    DWORD  dwDesiredAccess
+    );
+
+typedef SC_HANDLE (WINAPI* fpOpenSCManagerW)(
+    LPCWSTR lpMachineName,
+    LPCWSTR lpDatabaseName,
+    DWORD   dwDesiredAccess
+    );
+
+typedef SC_HANDLE (WINAPI* fpOpenServiceA)(
+    SC_HANDLE hSCManager,
+    LPCSTR    lpServiceName,
+    DWORD     dwDesiredAccess
+    );
+
+typedef SC_HANDLE (WINAPI* fpOpenServiceW)(
+    SC_HANDLE hSCManager,
+    LPCWSTR   lpServiceName,
+    DWORD     dwDesiredAccess
+    );
+
+typedef BOOL (WINAPI* fpQueryServiceStatusEx)(
+    SC_HANDLE      hService,
+    SC_STATUS_TYPE InfoLevel,
+    LPBYTE         lpBuffer,
+    DWORD          cbBufSize,
+    LPDWORD        pcbBytesNeeded
+    );
+
+typedef BOOL (WINAPI* fpControlService)(
+    SC_HANDLE       hService,
+    DWORD           dwControl,
+    LPSERVICE_STATUS lpServiceStatus
+    );
+
+typedef SC_HANDLE (WINAPI* fpCreateServiceA)(
+    SC_HANDLE hSCManager,
+    LPCSTR    lpServiceName,
+    LPCSTR    lpDisplayName,
+    DWORD     dwDesiredAccess,
+    DWORD     dwServiceType,
+    DWORD     dwStartType,
+    DWORD     dwErrorControl,
+    LPCSTR    lpBinaryPathName,
+    LPCSTR    lpLoadOrderGroup,
+    LPDWORD   lpdwTagId,
+    LPCSTR    lpDependencies,
+    LPCSTR    lpServiceStartName,
+    LPCSTR    lpPassword
+    );
+
+typedef SC_HANDLE (WINAPI* fpCreateServiceW)(
+    SC_HANDLE hSCManager,
+    LPCWSTR   lpServiceName,
+    LPCWSTR   lpDisplayName,
+    DWORD     dwDesiredAccess,
+    DWORD     dwServiceType,
+    DWORD     dwStartType,
+    DWORD     dwErrorControl,
+    LPCWSTR   lpBinaryPathName,
+    LPCWSTR   lpLoadOrderGroup,
+    LPDWORD   lpdwTagId,
+    LPCWSTR   lpDependencies,
+    LPCWSTR   lpServiceStartName,
+    LPCWSTR   lpPassword
+    );
+
+typedef BOOL (WINAPI* fpDeleteService)(
+    SC_HANDLE hService
+    );
+
+typedef BOOL (WINAPI* fpCloseServiceHandle)(
+    SC_HANDLE hSCObject
+    );
+
+typedef BOOL (WINAPI* fpChangeServiceConfigA)(
+    SC_HANDLE hService,
+    DWORD     dwServiceType,
+    DWORD     dwStartType,
+    DWORD     dwErrorControl,
+    LPCSTR    lpBinaryPathName,
+    LPCSTR    lpLoadOrderGroup,
+    LPDWORD   lpdwTagId,
+    LPCSTR    lpDependencies,
+    LPCSTR    lpServiceStartName,
+    LPCSTR    lpPassword,
+    LPCSTR    lpDisplayName
+    );
+
+typedef BOOL (WINAPI* fpChangeServiceConfigW)(
+    SC_HANDLE hService,
+    DWORD     dwServiceType,
+    DWORD     dwStartType,
+    DWORD     dwErrorControl,
+    LPCWSTR   lpBinaryPathName,
+    LPCWSTR   lpLoadOrderGroup,
+    LPDWORD   lpdwTagId,
+    LPCWSTR   lpDependencies,
+    LPCWSTR   lpServiceStartName,
+    LPCWSTR   lpPassword,
+    LPCWSTR   lpDisplayName
+    );
+
+typedef BOOL (WINAPI* fpChangeServiceConfig2A)(
+    SC_HANDLE hService,
+    DWORD     dwInfoLevel,
+    LPVOID    lpInfo
+    );
+
+typedef BOOL (WINAPI* fpChangeServiceConfig2W)(
+    SC_HANDLE hService,
+    DWORD     dwInfoLevel,
+    LPVOID    lpInfo
+    );
+
+typedef BOOL (WINAPI* fpStartServiceA)(
+    SC_HANDLE hService,
+    DWORD     dwNumServiceArgs,
+    LPCSTR    *lpServiceArgVectors
+    );
+
+typedef BOOL (WINAPI* fpStartServiceW)(
+    SC_HANDLE hService,
+    DWORD     dwNumServiceArgs,
+    LPCWSTR   *lpServiceArgVectors
+    );
+
+
+
+
+
+
+// ole32 functions
+typedef HRESULT (__stdcall* fpCoInitialize)(
+    LPVOID lpReserved
+    );
+
+
+// combase functions
+typedef HRESULT (__stdcall* fpCoCreateInstance)(
+    REFCLSID  rclsid,
+    LPVOID    pUnkOuter,   // LPUNKNOWN
+    DWORD     dwClsContext,
+    REFIID    riid,
+    LPVOID    *ppv
     );
 
 
