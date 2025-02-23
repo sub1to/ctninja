@@ -79,6 +79,9 @@ namespace ctninja
 			return $$(ntdll.dll, strlen, str);
 		}
 
+		// It doesn't handle floating points correctly if called though $$
+		// Disabling it for now
+
 		int $printf(const char* fmt, ...)
 		{
 			if(!check_msvcrt()){
@@ -88,8 +91,8 @@ namespace ctninja
 			int ret;
 			va_list args;
 			va_start(args, fmt);
-			//ret = vprintf_s(fmt, args);
-			ret = $$(msvcrt.dll, vprintf_s, fmt, args);
+			ret = vprintf_s(fmt, args);
+			//ret = $$(msvcrt.dll, vprintf_s, fmt, args);
 			va_end(args);
 			return ret;
 		}
@@ -99,8 +102,8 @@ namespace ctninja
 			int ret;
 			va_list args;
 			va_start(args, fmt);
-			//ret = vsprintf_s(buf, buf_size, fmt, args);
-			ret = $$(ntdll.dll, vsprintf_s, buf, buf_size, fmt, args);
+			ret = vsprintf_s(buf, buf_size, fmt, args);
+			//ret = $$(ntdll.dll, vsprintf_s, buf, buf_size, fmt, args);
 			va_end(args);
 			return ret;
 		}
@@ -114,8 +117,8 @@ namespace ctninja
 			int ret;
 			va_list args;
 			va_start(args, fmt);
-			//ret = vwprintf_s(fmt, args);
-			ret = $$(msvcrt.dll, vwprintf_s, fmt, args);
+			ret = vwprintf_s(fmt, args);
+			//ret = $$(msvcrt.dll, vwprintf_s, fmt, args);
 			va_end(args);
 			return ret;
 		}
@@ -125,8 +128,8 @@ namespace ctninja
 			int ret;
 			va_list args;
 			va_start(args, fmt);
-			//ret = vswprintf_s(buf, buf_size, fmt, args);
-			ret = $$(ntdll.dll, vswprintf_s, buf, buf_size, fmt, args);
+			ret = vswprintf_s(buf, buf_size, fmt, args);
+			//ret = $$(ntdll.dll, vswprintf_s, buf, buf_size, fmt, args);
 			va_end(args);
 			return ret;
 		}
