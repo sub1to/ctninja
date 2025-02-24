@@ -60,69 +60,93 @@ typedef struct tagPROCESSENTRY32
 
 
 
-
-// ntdll functions
+//
+// START ntdll.dll
+//
 typedef NTSTATUS (NTAPI *fpNtWow64ReadVirtualMemory64)(
-    HANDLE ProcessHandle,
-    PVOID64 BaseAddress,
-    PVOID Buffer,
-    ULONG64 Size,
-    PULONG64 NumberOfBytesRead
-    );
+     HANDLE ProcessHandle,
+     PVOID64 BaseAddress,
+     PVOID Buffer,
+     ULONG64 Size,
+     PULONG64 NumberOfBytesRead
+     );
 
 typedef NTSTATUS (NTAPI *fpNtWow64QueryInformationProcess64)(
-    HANDLE ProcessHandle,
-    ULONG ProcessInformationClass,
-    PVOID ProcessInformation,
-    ULONG ProcessInformationLength,
-    PULONG ReturnLength
-    );
+     HANDLE ProcessHandle,
+     ULONG ProcessInformationClass,
+     PVOID ProcessInformation,
+     ULONG ProcessInformationLength,
+     PULONG ReturnLength
+     );
 
 typedef NTSTATUS (NTAPI *fpNtQeurySystemInformation)(
-    //SYSTEM_INFORMATION_CLASS SystemInformationClass,
-    ULONG SystemInformationClass,
-    PVOID SystemInformation,
-    ULONG SystemInformationLength,
-    PULONG ReturnLength
-    );
+     ULONG SystemInformationClass,  // SYSTEM_INFORMATION_CLASS / SYSTEM_INFORMATION_CLASS_EXTENDED
+     PVOID SystemInformation,
+     ULONG SystemInformationLength,
+     PULONG ReturnLength
+     );
 
 typedef NTSTATUS (NTAPI *fpNtReadVirtualMemory)(
-    HANDLE ProcessHandle, 
-    PVOID BaseAddress, 
-    PVOID Buffer, 
-    SIZE_T NumberOfBytesToRead, 
-    PSIZE_T NumberOfBytesRead
-    );
+     HANDLE ProcessHandle, 
+     PVOID BaseAddress, 
+     PVOID Buffer, 
+     SIZE_T NumberOfBytesToRead, 
+     PSIZE_T NumberOfBytesRead
+     );
 
 typedef int (__cdecl* fpvsprintf_s)(
-    char *buffer,
-    size_t numberOfElements,
-    const char *format,
-    va_list argptr
-    );
+     char *buffer,
+     size_t numberOfElements,
+     const char *format,
+     va_list argptr
+     );
 
 typedef int (__cdecl* fpvswprintf_s)(
-    wchar_t *buffer,
-    size_t numberOfElements,
-    const wchar_t *format,
-    va_list argptr
-    );
+     wchar_t *buffer,
+     size_t numberOfElements,
+     const wchar_t *format,
+     va_list argptr
+     );
 
 typedef int (__cdecl* fp_vsnprintf)(
-   char *buffer,
-   size_t count,
-   const char *format,
-   va_list argptr
-);
+     char *buffer,
+     size_t count,
+     const char *format,
+     va_list argptr
+     );
 
 typedef size_t (*fpstrlen)(
-    const char* str
-);
+     const char* str
+     );
+
+typedef int (__cdecl* fpmemcmp)(
+    const void *Buf1,
+    const void *Buf2,
+    size_t      Size
+    );
+
+typedef LRESULT (WINAPI* fpNtdllDefWindowProc_W)(
+    HWND   hWnd,
+    UINT   Msg,
+    WPARAM wParam,
+    LPARAM lParam
+    );
+
+typedef void* (__cdecl* fpmemset)(
+    void*  _Dst,
+    int    _Val,
+    size_t _Size
+    );
+//
+// END ntdll.dll
+//
 
 
 
 
-// Kernel32 functions
+//
+// START kernel32.dll
+//
 typedef HMODULE (WINAPI* fpLoadLibraryA)(
     LPCSTR lpLibFileName
     );
@@ -274,10 +298,58 @@ typedef BOOL (WINAPI* fpDeviceIoControl)(
     LPOVERLAPPED lpOverlapped
     );
 
+typedef HMODULE (WINAPI* fpGetModuleHandleA)(
+    LPCSTR lpModuleName
+    );
+
+typedef int (WINAPI* fpGetLocaleInfoA)(
+    LCID  Locale,
+    LCTYPE LCType,
+    LPSTR lpLCData,
+    int   cchData
+    );
+
+typedef BOOL (WINAPI* fpQueryPerformanceCounter)(
+    LARGE_INTEGER* lpPerformanceCount
+    );
+
+typedef BOOL (WINAPI* fpQueryPerformanceFrequency)(
+    LARGE_INTEGER* lpFrequency
+    );
+
+typedef BOOL (WINAPI* fpFreeLibrary)(
+    HMODULE hLibModule
+    );
+
+typedef int (WINAPI* fpMultiByteToWideChar)(
+    UINT   CodePage,
+    DWORD  dwFlags,
+    LPCCH  lpMultiByteStr,
+    int    cbMultiByte,
+    LPWSTR lpWideCharStr,
+    int    cchWideChar
+    );
+
+typedef int (WINAPI* fpWideCharToMultiByte)(
+    UINT   CodePage,
+    DWORD  dwFlags,
+    LPCWCH lpWideCharStr,
+    int    cchWideChar,
+    LPSTR  lpMultiByteStr,
+    int    cbMultiByte,
+    LPCCH  lpDefaultChar,
+    LPBOOL lpUsedDefaultChar
+    );
+//
+// END kernel32.dll
+//
 
 
 
-// ucrtbase functions
+
+//
+// START ucrtbase.dll
+//
 typedef FILE* (__cdecl* fp_fsopen)(
     char const* _FileName,
     char const* _Mode,
@@ -362,11 +434,26 @@ typedef int (__cdecl* fpremove)(
     const char* path
     );
 
+typedef float (__cdecl* fpsqrtf)(
+    float _Xx
+    );
+
+typedef void (__cdecl* fpsrand)(
+    unsigned int _Seed
+    );
+
+typedef int (__cdecl* fprand)(
+    void
+    );
+//
+// END ucrtbase.dll
+//
 
 
 
-
-// kernelbase functions
+//
+// START kernelbase.dll
+//
 typedef __time64_t (__cdecl* fp_time64)(
     __time64_t* Time
     );
@@ -377,11 +464,16 @@ typedef DWORD (WINAPI *fpGetModuleFileNameExA)(
     LPSTR   lpFilename,
     DWORD   nSize
     );
+//
+// END kernelbase.dll
+//
 
 
 
 
-// msvcrt functions 
+//
+// START msvcrt.dll
+//
 typedef int (__cdecl* fpvprintf_s)(
     char const* const _Format,
     va_list           _ArgList
@@ -391,12 +483,21 @@ typedef int (__cdecl* fpvwprintf_s)(
     const wchar_t *format,
     va_list argptr
     );
+//
+// END msvcrt.dll
+//
 
 
 
 
-// user32 functions
+//
+// START user32.dll
+//
 typedef BOOL (WINAPI* fpGetCursorPos)(
+    LPPOINT lpPoint
+    );
+
+typedef BOOL (WINAPI* fpGetPhysicalCursorPos)(
     LPPOINT lpPoint
     );
 
@@ -409,10 +510,294 @@ typedef int (WINAPI* fpReleaseDC)(
     HDC hDC
     );
 
+typedef void (WINAPI* fpPostQuitMessage)(
+    int nExitCode
+    );
+
+typedef ATOM (WINAPI* fpRegisterClassExA)(
+    const WNDCLASSEXA *lpwcx
+    );
+
+typedef ATOM (WINAPI* fpRegisterClassExW)(
+    const WNDCLASSEXW *lpwcx
+    );
+
+typedef BOOL (WINAPI* fpUnregisterClassA)(
+    LPCSTR    lpClassName,
+    HINSTANCE hInstance
+    );
+
+typedef BOOL (WINAPI* fpUnregisterClassW)(
+    LPCWSTR   lpClassName,
+    HINSTANCE hInstance
+    );
+
+typedef HWND (WINAPI* fpCreateWindowExA)(
+    DWORD      dwExStyle,
+    LPCSTR     lpClassName,
+    LPCSTR     lpWindowName,
+    DWORD      dwStyle,
+    int        X,
+    int        Y,
+    int        nWidth,
+    int        nHeight,
+    HWND       hWndParent,
+    HMENU      hMenu,
+    HINSTANCE  hInstance,
+    LPVOID     lpParam
+    );
+
+typedef HWND (WINAPI* fpCreateWindowExW)(
+    DWORD      dwExStyle,
+    LPCWSTR    lpClassName,
+    LPCWSTR    lpWindowName,
+    DWORD      dwStyle,
+    int        X,
+    int        Y,
+    int        nWidth,
+    int        nHeight,
+    HWND       hWndParent,
+    HMENU      hMenu,
+    HINSTANCE  hInstance,
+    LPVOID     lpParam
+    );
+
+typedef BOOL (WINAPI* fpSetWindowDisplayAffinity)(
+    HWND  hWnd,
+    DWORD dwAffinity
+    );
+
+typedef LONG (WINAPI* fpSetWindowLongA)(
+    HWND hWnd,
+    int  nIndex,
+    LONG dwNewLong
+    );
+
+typedef LONG (WINAPI* fpSetWindowLongW)(
+    HWND hWnd,
+    int  nIndex,
+    LONG dwNewLong
+    );
+
+typedef BOOL (WINAPI* fpShowWindow)(
+    HWND hWnd,
+    int  nCmdShow
+    );
+
+typedef BOOL (WINAPI* fpUpdateWindow)(
+    HWND hWnd
+    );
+
+typedef BOOL (WINAPI* fpDestroyWindow)(
+    HWND hWnd
+    );
+
+typedef SHORT (WINAPI* fpGetAsyncKeyState)(
+    int vKey
+    );
+
+typedef HWND (WINAPI* fpSetFocus)(
+    HWND hWnd
+    );
+
+typedef BOOL (WINAPI* fpSetForegroundWindow)(
+    HWND hWnd
+    );
+
+typedef HWND (WINAPI* fpSetActiveWindow)(
+    HWND hWnd
+    );
+
+typedef HWND (WINAPI* fpFindWindowA)(
+    LPCSTR lpClassName,
+    LPCSTR lpWindowName
+    );
+
+typedef HWND (WINAPI* fpFindWindowW)(
+    LPCWSTR lpClassName,
+    LPCWSTR lpWindowName
+    );
+
+typedef BOOL (WINAPI* fpPeekMessageA)(
+    LPMSG lpMsg,
+    HWND  hWnd,
+    UINT  wMsgFilterMin,
+    UINT  wMsgFilterMax,
+    UINT  wRemoveMsg
+    );
+
+typedef BOOL (WINAPI* fpPeekMessageW)(
+    LPMSG lpMsg,
+    HWND  hWnd,
+    UINT  wMsgFilterMin,
+    UINT  wMsgFilterMax,
+    UINT  wRemoveMsg
+    );
+
+typedef BOOL (WINAPI* fpTranslateMessage)(
+    const MSG *lpMsg
+    );
+
+typedef LRESULT (WINAPI* fpDispatchMessageA)(
+    const MSG *lpMsg
+    );
+
+typedef LRESULT (WINAPI* fpDispatchMessageW)(
+    const MSG *lpMsg
+    );
+
+typedef HKL (WINAPI* fpGetKeyboardLayout)(
+    DWORD idThread
+    );
+
+typedef SHORT (WINAPI* fpVkKeyScanExW)(
+    WCHAR ch,
+    HKL   dwhkl
+    );
+
+typedef UINT (WINAPI* fpMapVirtualKeyW)(
+    UINT uCode,
+    UINT uMapType
+    );
+
+typedef UINT (WINAPI* fpMapVirtualKeyExW)(
+    UINT uCode,
+    UINT uMapType,
+    HKL  dwhkl
+    );
+
+typedef int (WINAPI* fpGetSystemMetrics)(
+    int nIndex
+    );
+
+typedef HCURSOR (WINAPI* fpSetCursor)(
+    HCURSOR hCursor
+    );
+
+typedef HCURSOR (WINAPI* fpGetCursor)(
+    void
+    );
+
+typedef HCURSOR (WINAPI* fpLoadCursorA)(
+    HINSTANCE hInstance,
+    LPCSTR    lpCursorName
+    );
+
+typedef HCURSOR (WINAPI* fpLoadCursorW)(
+    HINSTANCE hInstance,
+    LPCWSTR   lpCursorName
+    );
+
+typedef SHORT (WINAPI* fpGetKeyState)(
+    int nVirtKey
+    );
+
+typedef BOOL (WINAPI* fpGetKeyboardState)(
+    PBYTE lpKeyState
+    );
+
+typedef BOOL (WINAPI* fpSetKeyboardState)(
+    LPBYTE lpKeyState
+    );
+
+typedef HWND (WINAPI* fpGetForegroundWindow)(
+    void
+    );
+
+typedef BOOL (WINAPI* fpClientToScreen)(
+    HWND    hWnd,
+    LPPOINT lpPoint
+    );
+
+typedef BOOL (WINAPI* fpScreenToClient)(
+    HWND    hWnd,
+    LPPOINT lpPoint
+    );
+
+typedef BOOL (WINAPI* fpSetCursorPos)(
+    int X,
+    int Y
+    );
+
+typedef BOOL (WINAPI* fpSetPhysicalCursorPos)(
+    int X,
+    int Y
+    );
+
+typedef BOOL (WINAPI* fpGetClientRect)(
+    HWND  hWnd,
+    LPRECT lpRect
+    );
+
+typedef BOOL (WINAPI* fpGetWindowRect)(
+    HWND  hWnd,
+    LPRECT lpRect
+    );
+
+typedef BOOL (WINAPI* fpAdjustWindowRect)(
+    LPRECT lpRect,
+    DWORD  dwStyle,
+    BOOL   bMenu
+    );
+
+typedef BOOL (WINAPI* fpAdjustWindowRectEx)(
+    LPRECT lpRect,
+    DWORD  dwStyle,
+    BOOL   bMenu,
+    DWORD  dwExStyle
+    );
+
+typedef LPARAM (WINAPI* fpGetMessageExtraInfo)(
+    void
+    );
+
+typedef BOOL (WINAPI* fpTrackMouseEvent)(
+    LPTRACKMOUSEEVENT lpEventTrack
+    );
+
+typedef HWND (WINAPI* fpGetCapture)(
+    void
+    );
+
+typedef HWND (WINAPI* fpSetCapture)(
+    HWND hWnd
+    );
+
+typedef BOOL (WINAPI* fpReleaseCapture)(
+    void
+    );
+
+typedef BOOL (WINAPI* fpIsWindowUnicode)(
+    HWND hWnd
+    );
+
+typedef BOOL (WINAPI* fpEnableWindow)(
+    HWND hWnd,
+    BOOL bEnable
+    );
+
+typedef BOOL (WINAPI* fpIsWindowEnabled)(
+    HWND hWnd
+    );
+
+typedef BOOL (WINAPI* fpSetProcessDPIAware)(
+    void
+    );
+
+typedef HMONITOR (WINAPI* fpMonitorFromWindow)(
+    HWND  hwnd,
+    DWORD dwFlags
+    );
+//
+// END user32.dll
+//
 
 
 
-// Gdi32 functions
+
+//
+// START Gdi32.dll
+//
 typedef HBITMAP (WINAPI* fpCreateBitmap)(
     int        nWidth,
     int        nHeight,
@@ -480,12 +865,27 @@ typedef BOOL (WINAPI* fpDeleteDC)(
     HDC hdc
     );
 
+typedef int (WINAPI* fpGetDeviceCaps)(
+    HDC hdc,
+    int index
+    );
+
+typedef HRGN (WINAPI* fpCreateRectRgn)(
+    int x1,
+    int y1,
+    int x2,
+    int y2
+    );
+//
+// END Gdi32.dll
+//
 
 
 
 
-
-// Advapi32 functions
+//
+// START Advapi32.dll
+//
 typedef SC_HANDLE (WINAPI* fpOpenSCManagerA)(
     LPCSTR lpMachineName,
     LPCSTR lpDatabaseName,
@@ -615,19 +1015,29 @@ typedef BOOL (WINAPI* fpStartServiceW)(
     DWORD     dwNumServiceArgs,
     LPCWSTR   *lpServiceArgVectors
     );
+//
+// END Advapi32.dll
+//
 
 
 
 
-
-
-// ole32 functions
+//
+// START ole32.dll
+//
 typedef HRESULT (__stdcall* fpCoInitialize)(
     LPVOID lpReserved
     );
+//
+// END ole32.dll
+//
 
 
-// combase functions
+
+
+//
+// START combase.dll
+//
 typedef HRESULT (__stdcall* fpCoCreateInstance)(
     REFCLSID  rclsid,
     LPVOID    pUnkOuter,   // LPUNKNOWN
@@ -635,10 +1045,46 @@ typedef HRESULT (__stdcall* fpCoCreateInstance)(
     REFIID    riid,
     LPVOID    *ppv
     );
+//
+// END combase.dll
+//
 
 
+//
+// START dwmapi.dll
+//
+typedef HRESULT (WINAPI* fpDwmExtendFrameIntoClientArea)(
+    HWND           hWnd,
+    const MARGINS *pMarInset
+    );
+
+typedef HRESULT (WINAPI* fpDwmIsCompositionEnabled)(
+    BOOL* pfEnabled
+    );
+
+typedef HRESULT (WINAPI* fpDwmGetColorizationColor)(
+    DWORD* pcrColorization,
+    BOOL*  pfOpaqueBlend
+    );
+
+typedef HRESULT (WINAPI* fpDwmEnableBlurBehindWindow)(
+    HWND hWnd,
+    const DWM_BLURBEHIND* pBlurBehind
+    );
+//
+// END dwmapi.dll
+//
 
 
+//
+// START d3d9.dll
+//
+typedef IDirect3D9* (WINAPI* fpDirect3DCreate9)(
+    UINT SDKVersion
+    );
+//
+// END d3d9.dll
+//
 
 
 

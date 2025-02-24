@@ -20,6 +20,8 @@
 #include <vector>
 #include <share.h>
 #include <intrin.h>
+#include <dwmapi.h>
+#include <d3d9.h>
 
 #ifdef _IN_
 #undef _IN_
