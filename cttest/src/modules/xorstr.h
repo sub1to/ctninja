@@ -24,6 +24,144 @@ namespace xorstr
 			return true;
 		});
 
+		REGISTER_TEST("ctninja::$printf", [](UNIT_TEST* test)->bool{
+			BCASS(ctninja::$printf("%.2f\n", 1.23456f) == 5);
+			BCASS(ctninja::$printf("%d\n", -123456) == 8);
+			BCASS(ctninja::$printf("%u\n", 123456) ==  7);
+			BCASS(ctninja::$printf("%x\n", 0xabc456) == 7);
+			BCASS(ctninja::$printf("%s\n", "test") == 5);
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::$wprintf", [](UNIT_TEST* test)->bool{
+			BCASS(ctninja::$wprintf(L"%.2f\n", 1.23456f) == 5);
+			BCASS(ctninja::$wprintf(L"%d\n", -123456) == 8);
+			BCASS(ctninja::$wprintf(L"%u\n", 123456) ==  7);
+			BCASS(ctninja::$wprintf(L"%x\n", 0xabc456) == 7);
+			BCASS(ctninja::$wprintf(L"%s\n", L"test") == 5);
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::$sprintf float", [](UNIT_TEST* test)->bool{
+			char	buf1[0x100];
+			char	buf2[0x100];
+			
+			BCASS(ctninja::$sprintf(buf1, sizeof(buf1), "%.2f", 1.23456f) != 0);
+			sprintf_s(buf2, sizeof(buf2), "%.2f", 1.23456f);
+			//printf("buf1: %s\n", buf1);
+			//printf("buf2: %s\n", buf2);
+			BCASS(strcmp(buf1, buf2) == 0);
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::$sprintf hex", [](UNIT_TEST* test)->bool{
+			char	buf1[0x100];
+			char	buf2[0x100];
+			
+			BCASS(ctninja::$sprintf(buf1, sizeof(buf1), "%x", 0x123abc) != 0);
+			sprintf_s(buf2, sizeof(buf2), "%x", 0x123abc);
+			//printf("buf1: %s\n", buf1);
+			//printf("buf2: %s\n", buf2);
+			BCASS(strcmp(buf1, buf2) == 0);
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::$sprintf unsigned int", [](UNIT_TEST* test)->bool{
+			char	buf1[0x100];
+			char	buf2[0x100];
+			
+			ctninja::$sprintf(buf1, sizeof(buf1), "%u", 123456);
+			sprintf_s(buf2, sizeof(buf2), "%u", 123456);
+			//printf("buf1: %s\n", buf1);
+			//printf("buf2: %s\n", buf2);
+			BCASS(strcmp(buf1, buf2) == 0);
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::$sprintf signed int", [](UNIT_TEST* test)->bool{
+			char	buf1[0x100];
+			char	buf2[0x100];
+			
+			ctninja::$sprintf(buf1, sizeof(buf1), "%d", -123456);
+			sprintf_s(buf2, sizeof(buf2), "%d", -123456);
+			//printf("buf1: %s\n", buf1);
+			//printf("buf2: %s\n", buf2);
+			BCASS(strcmp(buf1, buf2) == 0);
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::$sprintf string", [](UNIT_TEST* test)->bool{
+			char	buf1[0x100];
+			char	buf2[0x100];
+			
+			ctninja::$sprintf(buf1, sizeof(buf1), "%s", "test");
+			sprintf_s(buf2, sizeof(buf2), "%s", "test");
+			//printf("buf1: %s\n", buf1);
+			//printf("buf2: %s\n", buf2);
+			BCASS(strcmp(buf1, buf2) == 0);
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::$swprintf float", [](UNIT_TEST* test)->bool{
+			wchar_t	buf1[0x100];
+			wchar_t	buf2[0x100];
+			
+			ctninja::$swprintf(buf1, sizeof(buf1) / sizeof(*buf1), L"%.2f", 1.23456f);
+			swprintf_s(buf2, sizeof(buf2) / sizeof(*buf2), L"%.2f", 1.23456f);
+			//wprintf_s(L"buf1: %s\n", buf1);
+			//wprintf_s(L"buf2: %s\n", buf2);
+			BCASS(wcscmp(buf1, buf2) == 0);
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::$swprintf hex", [](UNIT_TEST* test)->bool{
+			wchar_t	buf1[0x100];
+			wchar_t	buf2[0x100];
+			
+			ctninja::$swprintf(buf1, sizeof(buf1) / sizeof(*buf1), L"%x", 0x123abc);
+			swprintf_s(buf2, sizeof(buf2) / sizeof(*buf2), L"%x", 0x123abc);
+			//printf("buf1: %s\n", buf1);
+			//printf("buf2: %s\n", buf2);
+			BCASS(wcscmp(buf1, buf2) == 0);
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::$swprintf unsigned int", [](UNIT_TEST* test)->bool{
+			wchar_t	buf1[0x100];
+			wchar_t	buf2[0x100];
+			
+			ctninja::$swprintf(buf1, sizeof(buf1) / sizeof(*buf1), L"%u", 123456);
+			swprintf_s(buf2, sizeof(buf2) / sizeof(*buf2), L"%u", 123456);
+			//printf("buf1: %s\n", buf1);
+			//printf("buf2: %s\n", buf2);
+			BCASS(wcscmp(buf1, buf2) == 0);
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::$swprintf signed int", [](UNIT_TEST* test)->bool{
+			wchar_t	buf1[0x100];
+			wchar_t	buf2[0x100];
+			
+			ctninja::$swprintf(buf1, sizeof(buf1) / sizeof(*buf1), L"%d", -123456);
+			swprintf_s(buf2, sizeof(buf2) / sizeof(*buf2), L"%d", -123456);
+			//printf("buf1: %s\n", buf1);
+			//printf("buf2: %s\n", buf2);
+			BCASS(wcscmp(buf1, buf2) == 0);
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::$swprintf string", [](UNIT_TEST* test)->bool{
+			wchar_t	buf1[0x100];
+			wchar_t	buf2[0x100];
+			
+			ctninja::$swprintf(buf1, sizeof(buf1) / sizeof(*buf1), L"%s", L"test");
+			swprintf_s(buf2, sizeof(buf2) / sizeof(*buf2), L"%s", L"test");
+			//printf("buf1: %s\n", buf1);
+			//printf("buf2: %s\n", buf2);
+			BCASS(wcscmp(buf1, buf2) == 0);
+			return true;
+		});
+
 		REGISTER_TEST("ctninja::xorstr key_char", [](UNIT_TEST* test)->bool{
 			// The key_char generation needs to give a good distribution, even if the input characters are all the same
 

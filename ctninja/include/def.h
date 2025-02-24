@@ -445,6 +445,24 @@ typedef void (__cdecl* fpsrand)(
 typedef int (__cdecl* fprand)(
     void
     );
+
+typedef __int64 (__fastcall* fp__stdio_common_vsprintf_s)(
+    __int64 flags,
+    char* dest,
+    size_t destSize,
+    const char* format,
+    _locale_t locale,
+    va_list args
+    );
+
+typedef __int64 (__fastcall* fp__stdio_common_vswprintf_s)(
+    __int64 flags,
+    wchar_t* dest,
+    size_t destSizeInWords,
+    const wchar_t* format,
+    _locale_t locale,
+    va_list args
+    );
 //
 // END ucrtbase.dll
 //

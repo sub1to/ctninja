@@ -94,9 +94,9 @@ namespace ctninja
 	extern "C" {
 		size_t	$strlen(const char* str);
 		int		$printf(const char* fmt, ...);
-		int		$sprintf_s(char* buf, size_t buf_size, const char* fmt, ...);
-		int		$wprintf_s(const wchar_t* fmt, ...);
-		int		$swprintf_s(wchar_t* buf, size_t buf_size, const wchar_t* fmt, ...);
+		int		$sprintf(char* buf, size_t buf_size, const char* fmt, ...);
+		int		$wprintf(const wchar_t* fmt, ...);
+		int		$swprintf(wchar_t* buf, size_t buf_size, const wchar_t* fmt, ...);
 	}
 }
 
@@ -107,6 +107,13 @@ constexpr auto operator""_X()
 }
 
 
+
+// for legacy compat
+#ifdef CTNINJA_LEGACY_PRINTF
+#define $sprintf_s $sprintf
+#define $wprintf_s $wprintf
+#define $swprintf_s $swprintf
+#endif
 
 
 #endif //_CTNINJA_XORSTR_H_

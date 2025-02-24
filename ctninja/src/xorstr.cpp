@@ -12,30 +12,32 @@
 
 namespace ctninja
 {
-	constexpr long MSVCRT_FLAG_RUN		(1 << 0);
-	constexpr long MSVCRT_FLAG_LOADED	(1 << 1);
-	constexpr long MSVCRT_FLAG_FAILED	(1 << 2);
+	// Interlocked operations are used to make the functions threadsafe
+	constexpr long DLL_FLAG_RUN		(1 << 0);	// Indicated that the first thread has requested check
+	constexpr long DLL_FLAG_LOADED	(1 << 1);	// Indicates that the library is loaded
+	constexpr long DLL_FLAG_FAILED	(1 << 2);	// Indicates the library has failed to load
 
 	volatile long	m_msvcrt	= 0;
+	volatile long	m_ucrtbase	= 0;
 
 
 	// this is not guaranteed to be loaded, so gotta check..
 	// ntdll should always be loaded.
-	bool check_msvcrt()
+	bool check_dll(uint32_t hash, const char* name, volatile long* lock)
 	{
 		long		flags;
 		uint32_t	errmod;
 			
 		errmod	= 0;
-		flags	= _InterlockedOr(&m_msvcrt, MSVCRT_FLAG_RUN);
+		flags	= _InterlockedOr(lock, DLL_FLAG_RUN);
 
-		if(flags & MSVCRT_FLAG_RUN){
-			if(flags & MSVCRT_FLAG_LOADED){
+		if(flags & DLL_FLAG_RUN){
+			if(flags & DLL_FLAG_LOADED){
 				return true;
 			}
 
-			if(flags & MSVCRT_FLAG_FAILED){
-				xport::set_last_error(xport::IMERR_NO_MODULE, "msvcrt.dll"_JOAAT, 0);
+			if(flags & DLL_FLAG_FAILED){
+				xport::set_last_error(xport::IMERR_NO_MODULE, hash, 0);
 				return false;
 			}
 
@@ -43,24 +45,24 @@ namespace ctninja
 			// we will wait 1 ms and if it's still not loaded set the failed flag, so we don't wait again
 			$$(Kernel32.dll, Sleep, 1);
 
-			flags	= _InterlockedOr(&m_msvcrt, MSVCRT_FLAG_RUN);
+			flags	= _InterlockedOr(lock, DLL_FLAG_RUN);
 
-			if(flags & MSVCRT_FLAG_LOADED){
+			if(flags & DLL_FLAG_LOADED){
 				return true;
 			}
 
-			flags	= _InterlockedOr(&m_msvcrt, MSVCRT_FLAG_FAILED);
+			flags	= _InterlockedOr(lock, DLL_FLAG_FAILED);
 			xport::set_last_error(xport::IMERR_NO_MODULE, "msvcrt.dll"_JOAAT, 0);
 			return false;
 		}
 
 		if(xport::get_module("msvcrt.dll"_JOAAT)){
-			flags = _InterlockedOr(&m_msvcrt, MSVCRT_FLAG_LOADED);
+			flags = _InterlockedOr(lock, DLL_FLAG_LOADED);
 			return true;
 		}
 			
 		if(!$$(Kernel32.dll, LoadLibraryA, "msvcrt.dll"_X.c_str())){
-			flags = _InterlockedOr(&m_msvcrt, MSVCRT_FLAG_FAILED);
+			flags = _InterlockedOr(lock, DLL_FLAG_FAILED);
 			return false;
 		}
 			
@@ -69,9 +71,17 @@ namespace ctninja
 			xport::set_last_error(0, 0, 0);
 		}
 
-		flags = _InterlockedOr(&m_msvcrt, MSVCRT_FLAG_LOADED);
+		flags = _InterlockedOr(lock, DLL_FLAG_LOADED);
 		return true;
 	}
+
+	#define	CHECK_DLL(x, lock) if(!check_dll(#x##_JOAAT, #x##_X.c_str(), &##lock)){ return 0; }
+
+	// 0x24 is the value the compiler sets when you link vsprintf_s / vswprintf_s
+	// the wrapper function calls a function that returns a pointer to this static value
+	// then it derefs it, to pass the value in the first param
+	constexpr __int64	_stdio_common_vsprintf_s_flags		= 0x24;
+	constexpr __int64	_stdio_common_vswprintf_s_flags		= 0x24;
 
 	extern "C" {
 		size_t $strlen(const char* str)
@@ -79,57 +89,56 @@ namespace ctninja
 			return $$(ntdll.dll, strlen, str);
 		}
 
-		// It doesn't handle floating points correctly if called though $$
-		// Disabling it for now
-
 		int $printf(const char* fmt, ...)
 		{
-			if(!check_msvcrt()){
-				return 0;
-			}
+			CHECK_DLL(msvcrt.dll, m_msvcrt)
 
 			int ret;
 			va_list args;
 			va_start(args, fmt);
-			ret = vprintf_s(fmt, args);
-			//ret = $$(msvcrt.dll, vprintf_s, fmt, args);
+			//ret = vprintf_s(fmt, args);
+			ret = $$(msvcrt.dll, vprintf_s, fmt, args);
 			va_end(args);
 			return ret;
 		}
 
-		int $sprintf_s(char* buf, size_t buf_size, const char* fmt, ...)
+		int $sprintf(char* buf, size_t buf_size, const char* fmt, ...)
 		{
+			CHECK_DLL(ucrtbase.dll, m_ucrtbase)
+
 			int ret;
 			va_list args;
 			va_start(args, fmt);
-			ret = vsprintf_s(buf, buf_size, fmt, args);
+			//ret = vsprintf_s(buf, buf_size, fmt, args);
 			//ret = $$(ntdll.dll, vsprintf_s, buf, buf_size, fmt, args);
+			ret = (int) $$(ucrtbase.dll, __stdio_common_vsprintf_s, _stdio_common_vsprintf_s_flags, buf, buf_size, fmt, 0, args);
 			va_end(args);
 			return ret;
 		}
 
-		int $wprintf_s(const wchar_t* fmt, ...)
+		int $wprintf(const wchar_t* fmt, ...)
 		{
-			if(!check_msvcrt()){
-				return 0;
-			}
+			CHECK_DLL(msvcrt.dll, m_msvcrt)
 
 			int ret;
 			va_list args;
 			va_start(args, fmt);
-			ret = vwprintf_s(fmt, args);
-			//ret = $$(msvcrt.dll, vwprintf_s, fmt, args);
+			//ret = vwprintf_s(fmt, args);
+			ret = $$(msvcrt.dll, vwprintf_s, fmt, args);
 			va_end(args);
 			return ret;
 		}
 
-		int $swprintf_s(wchar_t* buf, size_t buf_size, const wchar_t* fmt, ...)
+		int $swprintf(wchar_t* buf, size_t buf_size, const wchar_t* fmt, ...)
 		{
+			CHECK_DLL(ucrtbase.dll, m_ucrtbase)
+
 			int ret;
 			va_list args;
 			va_start(args, fmt);
-			ret = vswprintf_s(buf, buf_size, fmt, args);
+			//ret = vswprintf_s(buf, buf_size, fmt, args);
 			//ret = $$(ntdll.dll, vswprintf_s, buf, buf_size, fmt, args);
+			ret = (int) $$(ucrtbase.dll, __stdio_common_vswprintf_s, _stdio_common_vswprintf_s_flags, buf, buf_size, fmt, 0, args);
 			va_end(args);
 			return ret;
 		}
