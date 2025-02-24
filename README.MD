@@ -111,10 +111,20 @@ FARPROC  pCreateFile    = ctninja::xport::get_export(hKernel32, "CreateFileW"_JO
 ### 3. Call Functions Stealthily  
 ```cpp
 #define CTNINJA_MAGIC_IMPORT
+#define CTNINJA_MAGIC_IMPORT_THROW_ON_FAILURE
 #include <ctninja/ctninja.h>
 
-HANDLE   hFile          = $$(Kernel32.dll, CreateFileW, L"file.txt", GENERIC_READ, ...);
+try{
+	HANDLE   hFile          = $$(Kernel32.dll, CreateFileW, L"file.txt", GENERIC_READ, ...);
+}
+catch(CallException const& e)
+{
+	ctninja::$printf("%s\n"_X.c_str(), e.what());
+}
 ```
+
+- `CTNINJA_MAGIC_IMPORT` enables the `$` and `$$` macros
+- `CTNINJA_MAGIC_IMPORT_THROW_ON_FAILURE` enables exceptions in `$$` if the function is not found
 
 #### 3.1 Defining Function Signatures  
 For `$$()` to work, **you must define the function signature** as `fp<FunctionName>` in your code.  
