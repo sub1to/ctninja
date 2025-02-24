@@ -446,7 +446,7 @@ typedef int (__cdecl* fprand)(
     void
     );
 
-typedef __int64 (__fastcall* fp__stdio_common_vsprintf_s)(
+typedef __int64 (__cdecl* fp__stdio_common_vsprintf_s)(
     __int64 flags,
     char* dest,
     size_t destSize,
@@ -455,7 +455,7 @@ typedef __int64 (__fastcall* fp__stdio_common_vsprintf_s)(
     va_list args
     );
 
-typedef __int64 (__fastcall* fp__stdio_common_vswprintf_s)(
+typedef __int64 (__cdecl* fp__stdio_common_vswprintf_s)(
     __int64 flags,
     wchar_t* dest,
     size_t destSizeInWords,
