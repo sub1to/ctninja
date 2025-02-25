@@ -48,6 +48,11 @@ namespace xorstr
 		REGISTER_TEST("ctninja::xorstr", [](UNIT_TEST* test)->bool{
 			BCASS(strcmp("abcd", "abcd"_X.c_str()) == 0);
 			BCASS(strcmp("abcd", "ab" "cd"_X.c_str()) == 0);
+			BCASS(strcmp("abcd", "CHECK_FOR_THIS_STRING_THE_IN_BINARY"_X.c_str()) != 0);
+
+			BCASS(wcscmp(L"abcd", L"abcd"_Xw.c_str()) == 0);
+			BCASS(wcscmp(L"abcd", L"ab" L"cd"_Xw.c_str()) == 0);
+			BCASS(wcscmp(L"abcd", L"CHECK_FOR_THIS_STRING_THE_IN_BINARY"_Xw.c_str()) != 0);
 			return true;
 		});
 
@@ -243,6 +248,41 @@ namespace xorstr
 			return true;
 		});
 
+		REGISTER_TEST("ctninja::xorstr key_char wide", [](UNIT_TEST* test)->bool{
+			// The key_char generation needs to give a good distribution, even if the input characters are all the same
+
+			auto secstr = L"AAAAAAAAAAAAAAAAAAAAAAAAAAAAA"_Xw;
+			auto str = secstr.c_str();
+
+			BYTE	key_occurance_count[0x100];
+			size_t	key_duplicate_count;
+
+			memset(&key_occurance_count, 0, sizeof(key_occurance_count));
+			key_duplicate_count	= 0;
+
+			for(size_t i = 0; i < secstr.m_keys.size(); ++i){
+				if(str[i] == '\0')
+					break;
+
+				if(++key_occurance_count[(uint8_t) secstr.m_keys.data()[i]] > 1){
+					key_duplicate_count++;
+				}
+
+				/*
+				printf_s("%c %02u %02x\n",
+					str[i],
+					(uint32_t) i,
+					(uint8_t) secstr.m_keys.data()[i]
+				);
+				//*/
+			}
+
+			BCASS(key_duplicate_count < 2);
+			BCASS(key_duplicate_count < 1);
+
+			return true;
+		});
+
 		REGISTER_TEST("ctninja::xorstr generate_global_key", [](UNIT_TEST* test)->bool{
 			// The key_char generation needs to give a good distribution, even if the input characters are all the same
 
@@ -300,6 +340,68 @@ namespace xorstr
 			printf_s("%02x\n", secstr_X.m_globalkey);
 			printf_s("%02x\n", secstr_Y.m_globalkey);
 			printf_s("%02x\n", secstr_Z.m_globalkey);
+			//*/
+
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::xorstr generate_global_key wide", [](UNIT_TEST* test)->bool{
+			// The key_char generation needs to give a good distribution, even if the input characters are all the same
+
+			auto secstr_A = L"AAAAAAAAAAAAAAAAAAAAAAAAAAAAA"_Xw;
+			auto secstr_B = L"AAAAAAAAAAAAAABAAAAAAAAAAAAAA"_Xw;
+			auto secstr_C = L"AAAAAABAAAAAAABAAAAAAAAAAAAAA"_Xw;
+			auto secstr_D = L"AAAAAABAAAAAAABAAAAAAAABAAAAA"_Xw;
+			auto secstr_E = L"ABAAAABAAAAAAABAAAAAAAABAAAAA"_Xw;
+			auto secstr_F = L"ABAAAABAAAAAAABAAAAABAABAAAAA"_Xw;
+			auto secstr_G = L"ABAAAABABAAAAABAAAAAAAABAAAAA"_Xw;
+			auto secstr_H = L"ABAAAABABAAAAABAAAABAAABAAAAA"_Xw;
+			auto secstr_I = L"ABC"_Xw;
+			auto secstr_J = L"ACD"_Xw;
+			auto secstr_K = L"ASDF"_Xw;
+			auto secstr_L = L"RDCF"_Xw;
+			auto secstr_M = L"asdf"_Xw;
+			auto secstr_N = L"jgg"_Xw;
+			auto secstr_O = L"dfg"_Xw;
+			auto secstr_P = L"dfgdfg"_Xw;
+			auto secstr_Q = L"aaaa"_Xw;
+			auto secstr_R = L"ffdd"_Xw;
+			auto secstr_S = L"asdfasdf"_Xw;
+			auto secstr_T = L"ghjk"_Xw;
+			auto secstr_U = L"fghj"_Xw;
+			auto secstr_V = L"vbnm"_Xw;
+			auto secstr_W = L"rtyudfghdfgh"_Xw;
+			auto secstr_X = L"ghjk"_Xw;
+			auto secstr_Y = L"ghdfhdfghdfghdfgh"_Xw;
+			auto secstr_Z = L"fhgjsadfas"_Xw;
+
+			//*
+			printf_s("%04x\n", secstr_A.m_globalkey);
+			printf_s("%04x\n", secstr_B.m_globalkey);
+			printf_s("%04x\n", secstr_C.m_globalkey);
+			printf_s("%04x\n", secstr_D.m_globalkey);
+			printf_s("%04x\n", secstr_E.m_globalkey);
+			printf_s("%04x\n", secstr_F.m_globalkey);
+			printf_s("%04x\n", secstr_G.m_globalkey);
+			printf_s("%04x\n", secstr_H.m_globalkey);
+			printf_s("%04x\n", secstr_I.m_globalkey);
+			printf_s("%04x\n", secstr_J.m_globalkey);
+			printf_s("%04x\n", secstr_K.m_globalkey);
+			printf_s("%04x\n", secstr_L.m_globalkey);
+			printf_s("%04x\n", secstr_M.m_globalkey);
+			printf_s("%04x\n", secstr_N.m_globalkey);
+			printf_s("%04x\n", secstr_O.m_globalkey);
+			printf_s("%04x\n", secstr_P.m_globalkey);
+			printf_s("%04x\n", secstr_Q.m_globalkey);
+			printf_s("%04x\n", secstr_R.m_globalkey);
+			printf_s("%04x\n", secstr_S.m_globalkey);
+			printf_s("%04x\n", secstr_T.m_globalkey);
+			printf_s("%04x\n", secstr_U.m_globalkey);
+			printf_s("%04x\n", secstr_V.m_globalkey);
+			printf_s("%04x\n", secstr_W.m_globalkey);
+			printf_s("%04x\n", secstr_X.m_globalkey);
+			printf_s("%04x\n", secstr_Y.m_globalkey);
+			printf_s("%04x\n", secstr_Z.m_globalkey);
 			//*/
 
 			return true;

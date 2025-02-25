@@ -89,6 +89,77 @@ namespace ctninja
 				return m_data.data();
 			}
 		};
+
+		template<std::size_t N>
+		struct WXString
+		{
+			const wchar_t m_globalkey;
+			std::array<wchar_t, N + 1>	m_data;
+			std::array<wchar_t, N + 1>	m_keys;
+    
+			template <std::size_t... s>
+			constexpr WXString(const wchar_t (&arr)[N], std::integer_sequence<std::size_t, s...>)
+			: m_globalkey(generate_global_key(arr))
+			, m_keys{key_char(arr[s], s)...}
+			, m_data{enc_char(arr[s], s)...}
+			{
+				//
+			}
+ 
+			constexpr WXString(wchar_t const(&arr)[N])
+			: WXString(arr, std::make_integer_sequence<std::size_t, N>())
+			{
+				//
+			}
+
+			template <std::size_t... s>
+			constexpr wchar_t generate_global_key(const wchar_t (&arr)[N])
+			{
+				// base key
+				wchar_t r = static_cast<wchar_t>(0x7A + (N >> 1) + seed);
+
+				// single byte hash
+				for(std::size_t i = 0; i < N; ++i){
+					r += arr[i];
+					r ^= r >> 3;
+					r += r << 4;
+					r ^= r >> 2;
+				}
+
+				r ^= r >> 4;
+				r += r << 5;
+				r ^= r >> 7;
+
+				return r;
+			}
+
+			constexpr wchar_t enc_char(wchar_t c, std::size_t s)
+			{
+				wchar_t key = static_cast<wchar_t>(((c << 3) | (c >> 5)) + (s + 1) * 31);
+				return c ^ key ^ m_globalkey;
+			}
+
+			constexpr wchar_t key_char(wchar_t c, std::size_t s)
+			{
+				return static_cast<wchar_t>(((c << 3) | (c >> 5)) + (s + 1) * 31);
+			}
+
+			wchar_t dec_char(wchar_t c, std::size_t s)
+			{
+				return c ^ m_keys[s] ^ m_globalkey;
+			}
+
+			__forceinline decltype(auto) c_str()
+			{
+				for(size_t i = 0; i < N; ++i){
+					m_data[i] = dec_char(m_data[i], i);
+				}
+
+				m_data[N]	= L'\0';
+
+				return m_data.data();
+			}
+		};
 	}
 
 	extern "C" {
@@ -106,6 +177,12 @@ template<ctninja::xorstr::XString XS>
 constexpr auto operator""_X()
 {
 	return XS;
+}
+
+template<ctninja::xorstr::WXString WXS>
+constexpr auto operator""_Xw()
+{
+	return WXS;
 }
 
 
