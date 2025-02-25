@@ -110,9 +110,11 @@ namespace ctninja
 			int ret;
 			va_list args;
 			va_start(args, fmt);
-			//ret = vsprintf_s(buf, buf_size, fmt, args);
-			//ret = $$(ntdll.dll, vsprintf_s, buf, buf_size, fmt, args);
-			ret = (int) $$(ucrtbase.dll, __stdio_common_vsprintf_s, _stdio_common_vsprintf_s_flags, buf, buf_size, fmt, 0, args);
+			if(buf == nullptr || buf_size == 0){
+				ret	= (int) $$(ucrtbase.dll, __stdio_common_vsprintf, _stdio_common_vsprintf_s_flags | 2, buf, buf_size, fmt, 0, args);
+			} else {
+				ret = (int) $$(ucrtbase.dll, __stdio_common_vsprintf_s, _stdio_common_vsprintf_s_flags, buf, buf_size, fmt, 0, args);
+			}
 			va_end(args);
 			return ret;
 		}
@@ -147,9 +149,11 @@ namespace ctninja
 			int ret;
 			va_list args;
 			va_start(args, fmt);
-			//ret = vswprintf_s(buf, buf_size, fmt, args);
-			//ret = $$(ntdll.dll, vswprintf_s, buf, buf_size, fmt, args);
-			ret = (int) $$(ucrtbase.dll, __stdio_common_vswprintf_s, _stdio_common_vswprintf_s_flags, buf, buf_size, fmt, 0, args);
+			if(buf == nullptr || buf_size == 0){
+				ret	= (int) $$(ucrtbase.dll, __stdio_common_vswprintf, _stdio_common_vswprintf_s_flags | 2, buf, buf_size, fmt, 0, args);
+			} else {
+				ret = (int) $$(ucrtbase.dll, __stdio_common_vswprintf_s, _stdio_common_vswprintf_s_flags, buf, buf_size, fmt, 0, args);
+			}
 			va_end(args);
 			return ret;
 		}
