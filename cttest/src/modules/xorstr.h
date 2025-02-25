@@ -10,6 +10,32 @@
 
 namespace xorstr
 {
+	// function to test $vsprintf
+	int _test_sprintf(char* buf, size_t size, const char* fmt, ...)
+	{
+		int		ret;
+		va_list	args;
+
+		va_start(args, fmt);
+		ret	= ctninja::$vsprintf(buf, size, fmt, args);
+		va_end(args);
+
+		return ret;
+	}
+
+	// function to test $vswprintf
+	int _test_wsprintf(wchar_t* buf, size_t size, const wchar_t* fmt, ...)
+	{
+		int		ret;
+		va_list	args;
+
+		va_start(args, fmt);
+		ret	= ctninja::$vswprintf(buf, size, fmt, args);
+		va_end(args);
+
+		return ret;
+	}
+
 	void	reg()
 	{
 		REGISTER_TEST("ctninja::$strlen", [](UNIT_TEST* test)->bool{
@@ -156,6 +182,35 @@ namespace xorstr
 			
 			ctninja::$swprintf(buf1, sizeof(buf1) / sizeof(*buf1), L"%s", L"test");
 			swprintf_s(buf2, sizeof(buf2) / sizeof(*buf2), L"%s", L"test");
+			//printf("buf1: %s\n", buf1);
+			//printf("buf2: %s\n", buf2);
+			BCASS(wcscmp(buf1, buf2) == 0);
+			return true;
+		});
+
+		//
+		// $vsprintf
+		//
+		REGISTER_TEST("ctninja::$vsprintf float", [](UNIT_TEST* test)->bool{
+			char	buf1[0x100];
+			char	buf2[0x100];
+			
+			BCASS(_test_sprintf(nullptr, 0, "%.2f", 1.23456f) == 4);
+			BCASS(_test_sprintf(buf1, sizeof(buf1), "%.2f", 1.23456f) == 4);
+			sprintf_s(buf2, sizeof(buf2), "%.2f", 1.23456f);
+			//printf("buf1: %s\n", buf1);
+			//printf("buf2: %s\n", buf2);
+			BCASS(strcmp(buf1, buf2) == 0);
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::$vswprintf float", [](UNIT_TEST* test)->bool{
+			wchar_t	buf1[0x100];
+			wchar_t	buf2[0x100];
+			
+			BCASS(_test_wsprintf(nullptr, 0, L"%.2f", 1.23456f) == 4);
+			BCASS(_test_wsprintf(buf1, sizeof(buf1) / sizeof(*buf1), L"%.2f", 1.23456f) == 4);
+			swprintf_s(buf2, sizeof(buf2) / sizeof(*buf2), L"%.2f", 1.23456f);
 			//printf("buf1: %s\n", buf1);
 			//printf("buf2: %s\n", buf2);
 			BCASS(wcscmp(buf1, buf2) == 0);

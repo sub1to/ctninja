@@ -95,8 +95,10 @@ namespace ctninja
 		size_t	$strlen(const char* str);
 		int		$printf(const char* fmt, ...);
 		int		$sprintf(char* buf, size_t buf_size, const char* fmt, ...);
+		int		$vsprintf(char* buf, size_t buf_size, const char* fmt, va_list args);
 		int		$wprintf(const wchar_t* fmt, ...);
 		int		$swprintf(wchar_t* buf, size_t buf_size, const wchar_t* fmt, ...);
+		int		$vswprintf(wchar_t* buf, size_t buf_size, const wchar_t* fmt, va_list args);
 	}
 }
 

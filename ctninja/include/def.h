@@ -463,6 +463,24 @@ typedef __int64 (__cdecl* fp__stdio_common_vswprintf_s)(
     _locale_t locale,
     va_list args
     );
+
+typedef __int64 (__cdecl* fp__stdio_common_vsprintf)(
+    __int64 flags,
+    char* dest,
+    size_t destSizeInBytes,
+    const char* fmt,
+    _locale_t locale,
+    va_list args
+    );
+
+typedef __int64 (__cdecl* fp__stdio_common_vswprintf)(
+    __int64 flags,
+    wchar_t* dest,
+    size_t destSizeInBytes,
+    const wchar_t* fmt,
+    _locale_t locale,
+    va_list args
+    );
 //
 // END ucrtbase.dll
 //

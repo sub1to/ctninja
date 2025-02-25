@@ -80,6 +80,7 @@ namespace ctninja
 	// 0x24 is the value the compiler sets when you link vsprintf_s / vswprintf_s
 	// the wrapper function calls a function that returns a pointer to this static value
 	// then it derefs it, to pass the value in the first param
+	// The compiler generates `| 2` for the "unsafe" variants
 	constexpr __int64	_stdio_common_vsprintf_s_flags		= 0x24;
 	constexpr __int64	_stdio_common_vswprintf_s_flags		= 0x24;
 
@@ -116,6 +117,16 @@ namespace ctninja
 			return ret;
 		}
 
+		int $vsprintf(char* buf, size_t buf_size, const char* fmt, va_list args)
+		{
+			CHECK_DLL(ucrtbase.dll, m_ucrtbase)
+
+			if(buf == nullptr || buf_size == 0){
+				return (int) $$(ucrtbase.dll, __stdio_common_vsprintf, _stdio_common_vsprintf_s_flags | 2, buf, buf_size, fmt, 0, args);
+			}
+			return (int) $$(ucrtbase.dll, __stdio_common_vsprintf_s, _stdio_common_vsprintf_s_flags, buf, buf_size, fmt, 0, args);
+		}
+
 		int $wprintf(const wchar_t* fmt, ...)
 		{
 			CHECK_DLL(msvcrt.dll, m_msvcrt)
@@ -141,6 +152,16 @@ namespace ctninja
 			ret = (int) $$(ucrtbase.dll, __stdio_common_vswprintf_s, _stdio_common_vswprintf_s_flags, buf, buf_size, fmt, 0, args);
 			va_end(args);
 			return ret;
+		}
+
+		int $vswprintf(wchar_t* buf, size_t buf_size, const wchar_t* fmt, va_list args)
+		{
+			CHECK_DLL(ucrtbase.dll, m_ucrtbase)
+
+			if(buf == nullptr || buf_size == 0){
+				return (int) $$(ucrtbase.dll, __stdio_common_vswprintf, _stdio_common_vswprintf_s_flags | 2, buf, buf_size, fmt, 0, args);
+			}
+			return (int) $$(ucrtbase.dll, __stdio_common_vswprintf_s, _stdio_common_vswprintf_s_flags, buf, buf_size, fmt, 0, args);
 		}
 	}
 }
