@@ -70,6 +70,7 @@ namespace exception
 
 		REGISTER_TEST("ctninja::CallException ($$)", [](UNIT_TEST* test)->bool{
 			try{
+				$$(Kernel32.dll, GetLastError);
 				$$(spel64.dll, LoadLibraryA, "cheats.dll");
 			}
 			catch(const ctninja::CallException& e){

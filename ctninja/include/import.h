@@ -80,7 +80,7 @@ namespace ctninja
 			using FT = fp##f;																									\
 			FT	_tmp_##f = ctninja::xport::_$<FT>(#m##_JOAAT, #f##_JOAAT);														\
 			if(_tmp_##f) return _tmp_##f(__VA_ARGS__);																			\
-			throw ctninja::CallException("%s::%s(%s)"_X.c_str(), #m##_X.c_str(), #f##_X.c_str(), #__VA_ARGS__##_X.c_str());		\
+			throw ctninja::CallException("%s::%s(%s)"_X.c_str(), #m##_X.c_str(), #f##_X.c_str(), #__VA_ARGS__ ""_X.c_str() );	\
 		}()
 #else
 		#define $$(m, f, ...)														\

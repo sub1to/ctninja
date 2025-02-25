@@ -47,6 +47,7 @@ namespace xorstr
 
 		REGISTER_TEST("ctninja::xorstr", [](UNIT_TEST* test)->bool{
 			BCASS(strcmp("abcd", "abcd"_X.c_str()) == 0);
+			BCASS(strcmp("abcd", "ab" "cd"_X.c_str()) == 0);
 			return true;
 		});
 
