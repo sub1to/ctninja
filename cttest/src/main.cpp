@@ -14,14 +14,15 @@
 #define CTNINJA_SECURE_VALUE_DBG
 
 // Add the $ and $$ macros
+#define CTNINJA_MAGIC_IMPORT_THROW_ON_FAILURE
 #define CTNINJA_MAGIC_IMPORT
 #include "ctninja.h"
 
 // Include test framework
-#include "exception.h"
 #include "bctest.h"
 
 // Include test modules
+#include "modules/exception.h"
 #include "modules/import.h"
 #include "modules/joaat.h"
 #include "modules/xorstr.h"
@@ -36,6 +37,7 @@ int main(const char* argv[], int argc)
 
 	try{
 		// register modules
+		exception::reg();
 		joaat::reg();
 		xport::reg();
 		xorstr::reg();

@@ -1,3 +1,11 @@
+/*
+	Copyright 2025-9999 sub1to
+
+	This file is part of CTNinja
+
+	CTNinja is free software; See LICENSE.MD or https://opensource.org/license/mit
+*/
+
 #include "pch.h"
 #include "exception.h"
 
@@ -21,23 +29,9 @@ namespace ctninja
 		char*			pBuffer;
 		size_t			size;
 		size_t			prefix_len;
-		fp_vsnprintf	_vsnprintf;
-
-		_vsnprintf	= reinterpret_cast<fp_vsnprintf>(xport::get_export("ntdll.dll"_JOAAT, "_vsnprintf"_JOAAT));
-
-		if(_vsnprintf == nullptr){
-			char*	msg;
-			
-			size	= sizeof("[FormattedException::init] ntdll.dll::_vsnprintf not found");
-			msg		= "[FormattedException::init] ntdll.dll::_vsnprintf not found"_X.c_str();
-			pBuffer	= new char[size];
-			m_what	= pBuffer;
-			memcpy_s(pBuffer, size, msg, size);
-			return;
-		}
 
 		prefix_len	= $strlen(prefix);
-		size		= (size_t) _vsnprintf(nullptr, 0, fmt, args) + prefix_len + 3;
+		size		= (size_t) $vsprintf(nullptr, 0, fmt, args) + prefix_len + 3;
 		pBuffer		= new char[size];
 		m_what		= pBuffer;
 
@@ -45,7 +39,7 @@ namespace ctninja
 		pBuffer	+= prefix_len;
 		*pBuffer++	= ':';
 		*pBuffer++	= ' ';
-		_vsnprintf(pBuffer, size - (prefix_len + 2), fmt, args);
+		$vsprintf(pBuffer, size - (prefix_len + 2), fmt, args);
 	}
 
 	FORMATTED_EXCEPTION_CONSTRUCTOR(FormattedException, Exception)
