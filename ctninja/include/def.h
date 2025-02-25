@@ -340,6 +340,45 @@ typedef int (WINAPI* fpWideCharToMultiByte)(
     LPCCH  lpDefaultChar,
     LPBOOL lpUsedDefaultChar
     );
+
+typedef HANDLE (WINAPI* fpCreateMutexA)(
+    LPSECURITY_ATTRIBUTES lpMutexAttributes,
+    BOOL                  bInitialOwner,
+    LPCSTR                lpName
+    );
+
+typedef HANDLE (WINAPI* fpCreateMutexW)(
+    LPSECURITY_ATTRIBUTES lpMutexAttributes,
+    BOOL                  bInitialOwner,
+    LPCWSTR               lpName
+    );
+
+typedef HANDLE (WINAPI* fpOpenMutexW)(
+    DWORD   dwDesiredAccess,
+    BOOL    bInheritHandle,
+    LPCWSTR lpName
+    );
+
+typedef HANDLE (WINAPI* fpOpenMutexA)(
+    DWORD   dwDesiredAccess,
+    BOOL    bInheritHandle,
+    LPCSTR  lpName
+    );
+
+typedef BOOL (WINAPI* fpReleaseMutex)(
+    HANDLE hMutex
+    );
+
+typedef DWORD (WINAPI* fpSleepEx)(
+    DWORD dwMilliseconds,
+    BOOL  bAlertable
+    );
+
+typedef DWORD (WINAPI* fpWaitForSingleObjectEx)(
+    HANDLE hHandle,
+    DWORD  dwMilliseconds,
+    BOOL   bAlertable
+    );
 //
 // END kernel32.dll
 //
@@ -823,6 +862,20 @@ typedef BOOL (WINAPI* fpSetProcessDPIAware)(
 typedef HMONITOR (WINAPI* fpMonitorFromWindow)(
     HWND  hwnd,
     DWORD dwFlags
+    );
+
+typedef int (WINAPI* fpMessageBoxA)(
+    HWND    hWnd,
+    LPCSTR  lpText,
+    LPCSTR  lpCaption,
+    UINT    uType
+    );
+
+typedef int (WINAPI* fpMessageBoxW)(
+    HWND    hWnd,
+    LPCWSTR lpText,
+    LPCWSTR lpCaption,
+    UINT    uType
     );
 //
 // END user32.dll
