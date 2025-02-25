@@ -54,6 +54,10 @@ namespace ctninja
 			_IN_	const uint32_t hash
 			);
 
+		FARPROC get_first_export(
+			_IN_ const uint32_t hash
+			);
+
 		uint32_t get_last_error(
 			_OUT_	uint32_t* module	= nullptr,
 			_OUT_	uint32_t* function	= nullptr
@@ -70,6 +74,12 @@ namespace ctninja
 		{
 			return reinterpret_cast<T>(get_export(module, fn));
 		}
+
+		template <typename T>
+		T	_$(uint32_t fn)
+		{
+			return reinterpret_cast<T>(get_first_export(fn));
+		}
 		
 #ifdef CTNINJA_MAGIC_IMPORT
 		#define $(m, f) ctninja::xport::_$<fp##f>(#m##_JOAAT, #f##_JOAAT)
@@ -82,6 +92,14 @@ namespace ctninja
 			if(_tmp_##f) return _tmp_##f(__VA_ARGS__);																			\
 			throw ctninja::CallException("%s::%s(%s)"_X.c_str(), #m##_X.c_str(), #f##_X.c_str(), #__VA_ARGS__ ""_X.c_str() );	\
 		}()
+
+		#define $$$(f, ...)																					\
+		[&]()->decltype(auto){																				\
+			using FT = fp##f;																				\
+			FT	_tmp_##f = ctninja::xport::_$<FT>(#f##_JOAAT);												\
+			if(_tmp_##f) return _tmp_##f(__VA_ARGS__);														\
+			throw ctninja::CallException("%s(%s)"_X.c_str(), #f##_X.c_str(), #__VA_ARGS__ ""_X.c_str() );	\
+		}()
 #else
 		#define $$(m, f, ...)														\
 		[&]()->decltype(auto){														\
@@ -89,6 +107,14 @@ namespace ctninja
 			FT	_tmp_##f = ctninja::xport::_$<FT>(#m##_JOAAT, #f##_JOAAT);			\
 			if(_tmp_##f) return _tmp_##f(__VA_ARGS__);								\
 			return decltype(_tmp_##f(__VA_ARGS__))();								\
+		}()
+
+		#define $$$(f, ...)															\
+		[&]()->decltype(auto){														\
+			using FT = fp##f;														\
+			FT	_tmp_##f = ctninja::xport::_$<FT>(#f##_JOAAT);						\
+			if(_tmp_##f) return _tmp_##f(__VA_ARGS__);								\
+			return decltype(_tmp_##f(__VA_ARGS__))();;								\
 		}()
 #endif
 		//*/

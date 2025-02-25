@@ -208,6 +208,56 @@ namespace ctninja
 			return proc;
 		}
 
+		__declspec(noinline) FARPROC	get_first_export(_IN_ const uint32_t hash)
+		{
+			TEB*				pTeb;
+			PEB*				pPeb;
+			PEB_LDR_DATA_EX*	pLdr;
+			LIST_ENTRY*			pHead;
+			LIST_ENTRY*			pCur;
+
+			pTeb	= (TEB*) _get_teb();
+
+			if(pTeb == nullptr){
+				return nullptr;
+			}
+
+			pPeb	= pTeb->ProcessEnvironmentBlock;
+
+			if(pPeb == nullptr){
+				return nullptr;
+			}
+
+			pLdr	= reinterpret_cast<PEB_LDR_DATA_EX*>(pPeb->Ldr);
+
+			if(pLdr == nullptr){
+				return nullptr;
+			}
+	
+			pHead	= &pLdr->InLoadOrderModuleList;
+			pCur	= pHead->Flink;
+
+			for(; pCur != pHead; pCur = pCur->Flink){
+				LDR_MODULE*	pModule;
+				FARPROC		fp;
+
+				pModule	= reinterpret_cast<LDR_MODULE*>(pCur);
+
+				if(pModule->BaseDllName.Buffer == nullptr || pModule->BaseDllName.Length == 0)
+					continue;
+
+				fp	= get_export(reinterpret_cast<HMODULE>(pModule->BaseAddress), hash);
+
+				if(fp == nullptr)
+					continue;
+
+				return fp;
+			}
+
+			set_last_error(IMERR_NO_EXPORT, 0, hash);
+			return nullptr;
+		}
+
 		uint32_t get_last_error(_OUT_ uint32_t* module, _OUT_ uint32_t* function)
 		{
 			if(m_errNo == IMERR_OK){
