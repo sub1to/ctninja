@@ -14,10 +14,22 @@ namespace secval
 	typedef ctninja::SecureValue32<uint32_t>	SV32_U32;
 	typedef ctninja::SecureValue32<int32_t>		SV32_I32;
 
+	class MyTestClass
+	{
+	public:
+		MyTestClass() : m_protvalue(1234), m_pubvalue(5678) {}
+		int value() { return m_protvalue; }
+		int m_pubvalue;
+	protected:
+		int m_protvalue;
+	};
+
 #ifdef _M_X64
-	typedef ctninja::SecureValue64<BYTE*>		SVP_BYTE;
+	typedef ctninja::SecureValue64<BYTE*>			SVP_BYTE;
+	typedef ctninja::SecureValue64<MyTestClass*>	SVP_MYTESTCLASS;
 #else
-	typedef ctninja::SecureValue32<BYTE*>		SVP_BYTE;
+	typedef ctninja::SecureValue32<BYTE*>			SVP_BYTE;
+	typedef ctninja::SecureValue32<MyTestClass*>	SVP_MYTESTCLASS;
 #endif // _M_X64
 
 	#define ASTEST(t, s) if(!(t)) { test->err = s; return false; }
@@ -219,6 +231,17 @@ namespace secval
 #ifdef _M_X64
 			BCASS((pSec._dbg_get_key() & 0xFFFFFFFF'00000000) != 0);
 #endif // _M_X64
+
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::SecureValue -> Class Pointer", [](UNIT_TEST* test)->bool{
+			SVP_MYTESTCLASS	p	= new MyTestClass();
+
+			BCASS(p->value() == 1234);
+			BCASS(p->m_pubvalue == 5678);
+
+			delete p;
 
 			return true;
 		});

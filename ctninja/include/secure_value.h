@@ -314,6 +314,12 @@ namespace ctninja
 			return get_value();
 		}
 
+		T	operator->()
+		{
+			static_assert(std::is_pointer_v<T>, "T must be a pointer type to use ->");
+			return get_value();
+		}
+
 	protected:
 
 
