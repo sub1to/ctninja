@@ -160,7 +160,13 @@ namespace ctninja
 			dllName[dotPos + 4]	= '\0';
 
 			for(size_t i = 0, j = dotPos + 1;; ++i, ++j){
-				char c = string[j];
+				char c;
+
+				if(i >= sizeof(funcName)){
+					return nullptr;
+				}
+				
+				c			= string[j];
 				funcName[i]	= c;
 
 				if(c == '\0'){
