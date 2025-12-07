@@ -1,7 +1,7 @@
 project "ctninja"
 	uuid				"acc21cf6-e398-4850-93a0-f4d6305ef451"
 	kind				"StaticLib"
-	characterset		"MBCS"
+	characterset		"Unicode"
 	language			"C++"
 	cppdialect 			"C++20" 
 
@@ -52,15 +52,19 @@ project "ctninja"
 		defines { "DEBUG" }
 		optimize "Off"
 		symbols "On"
+		linktimeoptimization "Off"
 		
 	filter "configurations:Dev"
-		flags { "LinkTimeOptimization", "NoIncrementalLink" }
+		flags { "NoIncrementalLink" }
 		optimize "Off"
 		symbols "Off"
+		linktimeoptimization "On"
 		
 	filter "configurations:Release"
-		flags { "LinkTimeOptimization", "NoIncrementalLink" }
+		flags { "NoIncrementalLink" }
 		defines { "NDEBUG" }
 		optimize "Full"
 		symbols "Off"
+		linktimeoptimization "On"
+		rtti "Off"
 		

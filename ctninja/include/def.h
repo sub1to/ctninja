@@ -137,6 +137,29 @@ typedef void* (__cdecl* fpmemset)(
     int    _Val,
     size_t _Size
     );
+
+typedef unsigned long (*fpstrtoul)(
+    const char* strSource,
+    char** endPtr,
+    int base
+    );
+
+typedef PVOID (WINAPI* fpRtlAddVectoredExceptionHandler)(
+    ULONG First,
+    PVECTORED_EXCEPTION_HANDLER Handler
+    );
+
+typedef ULONG (WINAPI* fpRtlRemoveVectoredExceptionHandler)(
+    PVOID Handle
+    );
+
+#ifdef _M_X64
+typedef BOOLEAN (WINAPI* fpRtlAddFunctionTable)(
+    PRUNTIME_FUNCTION FunctionTable,
+    DWORD EntryCount,
+    DWORD64 BaseAddress
+    );
+#endif
 //
 // END ntdll.dll
 //
@@ -379,6 +402,64 @@ typedef DWORD (WINAPI* fpWaitForSingleObjectEx)(
     DWORD  dwMilliseconds,
     BOOL   bAlertable
     );
+
+typedef DWORD (WINAPI* fpGetCurrentThreadId)(
+    void
+    );
+
+typedef BOOL (WINAPI* fpAllocConsole)(
+    void
+    );
+
+typedef DWORD (WINAPI* fpGetCurrentProcessId)(
+    void
+    );
+
+typedef HANDLE (WINAPI* fpGetCurrentProcess)(
+    void
+    );
+
+typedef DWORD (WINAPI* fpGetProcessId)(
+    HANDLE hProc
+    );
+
+typedef BOOL (WINAPI* fpVirtualFree)(
+    LPVOID lpAddress,
+    SIZE_T dwSize,
+    DWORD dwFreeType
+    );
+
+typedef VOID (WINAPI* fpGetSystemInfo)(
+    LPSYSTEM_INFO lpSystemInfo
+    );
+
+typedef SIZE_T (WINAPI* fpVirtualQuery)(
+    LPCVOID lpAddress,
+    PMEMORY_BASIC_INFORMATION lpBuffer,
+    size_t dwLength
+    );
+
+typedef LPVOID (WINAPI* fpVirtualAlloc)(
+    LPVOID lpAddress,
+    SIZE_T dwSize,
+    DWORD flAllocationType,
+    DWORD flProtect
+    );
+
+typedef LPCSTR (WINAPI* fplstrcpyA)(
+    LPSTR lpDest,
+    LPCSTR lpSrc
+    );
+
+typedef BOOL (WINAPI* fpGetFileSizeEx)(
+    HANDLE hFile,
+    PLARGE_INTEGER lpFileSize
+    );
+
+typedef FARPROC (WINAPI* fpGetProcAddress)(
+    HMODULE hModule,
+    LPCSTR lpProcName
+    );
 //
 // END kernel32.dll
 //
@@ -519,6 +600,13 @@ typedef __int64 (__cdecl* fp__stdio_common_vswprintf)(
     const wchar_t* fmt,
     _locale_t locale,
     va_list args
+    );
+
+typedef errno_t (__cdecl* fpfreopen_s)(
+    FILE** stream,
+    const char* file,
+    const char* mode,
+    FILE* oldStream
     );
 //
 // END ucrtbase.dll
@@ -877,6 +965,15 @@ typedef int (WINAPI* fpMessageBoxW)(
     LPCWSTR lpCaption,
     UINT    uType
     );
+
+typedef UINT (WINAPI* fpMapVirtualKeyA)(
+    UINT uCode,
+    UINT uMapType
+    );
+
+typedef WORD (WINAPI* fpRegisterClassA)(
+    WNDCLASSA* lpWndClass
+    );
 //
 // END user32.dll
 //
@@ -1173,6 +1270,48 @@ typedef IDirect3D9* (WINAPI* fpDirect3DCreate9)(
     );
 //
 // END d3d9.dll
+//
+// 
+
+
+//
+// START D3DCOMPILER_47.dll
+//
+typedef HRESULT (WINAPI* fpD3DCompile)(
+    LPCVOID pSrcData,
+    SIZE_T SrcDataSize,
+    LPCSTR pSourceName,
+    const D3D_SHADER_MACRO* pDefines,
+    ID3DInclude* pInclude,
+    LPCSTR pEntrypoint,
+    LPCSTR pTarget,
+    UINT Flags1,
+    UINT Flags2,
+    ID3DBlob** ppCode,
+    ID3DBlob** ppErrorMsgs
+    );
+//
+// END D3DCOMPILER_47.dll
+//
+
+
+//
+// START d3d11.dll
+//
+typedef HRESULT (*fpD3D11CreateDevice)(
+    IDXGIAdapter* pAdapter,
+    D3D_DRIVER_TYPE driverType,
+    HMODULE software,
+    UINT flags,
+    const D3D_FEATURE_LEVEL* pFeatureLevelsIn,
+    UINT feature_levels,
+    UINT sdk_version,
+    ID3D11Device** ppDevice,
+    D3D_FEATURE_LEVEL* pFeatureLevelOut,
+    ID3D11DeviceContext** ppImmediateContext
+    );
+//
+// END d3d11.dll
 //
 
 

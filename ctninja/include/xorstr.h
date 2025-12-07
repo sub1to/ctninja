@@ -23,8 +23,8 @@ namespace ctninja
 		struct XString
 		{
 			const char m_globalkey;
-			std::array<char, N + 1>	m_data;
-			std::array<char, N + 1>	m_keys;
+			std::array<char, N>	m_data;
+			std::array<char, N>	m_keys;
     
 			template <std::size_t... s>
 			constexpr XString(const char (&arr)[N], std::integer_sequence<std::size_t, s...>)
@@ -94,8 +94,8 @@ namespace ctninja
 		struct WXString
 		{
 			const wchar_t m_globalkey;
-			std::array<wchar_t, N + 1>	m_data;
-			std::array<wchar_t, N + 1>	m_keys;
+			std::array<wchar_t, N>	m_data;
+			std::array<wchar_t, N>	m_keys;
     
 			template <std::size_t... s>
 			constexpr WXString(const wchar_t (&arr)[N], std::integer_sequence<std::size_t, s...>)

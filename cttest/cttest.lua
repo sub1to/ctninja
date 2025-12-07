@@ -1,7 +1,7 @@
 project "cttest"
 	uuid				"2139e4a9-12b3-4a47-aa38-543f9fae7a19"
 	kind				"ConsoleApp"
-	characterset		"MBCS"
+	characterset		"Unicode"
 	targetname 			"cttest"
 	language			"C++"
 	cppdialect 			"C++20" 
@@ -63,13 +63,16 @@ project "cttest"
 		defines { "DEBUG" }
 		optimize "Off"
 		symbols "On"
+		linktimeoptimization "Off"
 		
 	filter "configurations:Dev"
-		flags { "LinkTimeOptimization", "NoIncrementalLink" }
+		flags { "NoIncrementalLink" }
 		optimize "Off"
+		linktimeoptimization "On"
 		
 	filter "configurations:Release"
-		flags { "LinkTimeOptimization", "NoIncrementalLink" }
+		flags { "NoIncrementalLink" }
 		defines { "NDEBUG" }
 		optimize "Full"
 		symbols "Off"
+		linktimeoptimization "On"

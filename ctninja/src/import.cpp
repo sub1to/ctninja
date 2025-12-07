@@ -128,6 +128,55 @@ namespace ctninja
 			return nullptr;
 		}
 
+		__declspec(noinline) FARPROC	get_forwarded_export(const char* string)
+		{
+			size_t		dotPos;
+			char		dllName[0x100];
+			char		funcName[0x100];
+			HMODULE		hModule;
+
+			dotPos		= 0;
+
+			for(size_t i = 0; string[i]; ++i){
+				if(i >= sizeof(dllName) - sizeof("dll")){
+					return nullptr;
+				}
+
+				dllName[i] = string[i];
+
+				if(string[i] == '.'){
+					dotPos	= i;
+					break;
+				}
+			}
+
+			if(dotPos == 0){
+				return nullptr;
+			}
+
+			dllName[dotPos + 1]	= 'd';
+			dllName[dotPos + 2]	= 'l';
+			dllName[dotPos + 3]	= 'l';
+			dllName[dotPos + 4]	= '\0';
+
+			for(size_t i = 0, j = dotPos + 1;; ++i, ++j){
+				char c = string[j];
+				funcName[i]	= c;
+
+				if(c == '\0'){
+					break;
+				}
+			}
+
+			hModule	= get_module(joaat(dllName));
+
+			if(hModule == nullptr){
+				return nullptr;
+			}
+
+			return get_export(hModule, joaat(funcName));
+		}
+
 		__declspec(noinline) FARPROC	get_export(_IN_ void* module, _IN_ const uint32_t hash)
 		{
 			IMAGE_DOS_HEADER*		pDos;
@@ -143,6 +192,7 @@ namespace ctninja
 			uint32_t*				names;
 			uint16_t*				ordinals;
 			uint32_t*				functions;
+			uint32_t				rvaFunc;
 
 			if(!check_and_set_headers(module, &pDos, &pNT)){
 				return nullptr;
@@ -177,9 +227,14 @@ namespace ctninja
 						return nullptr;
 					}
 
-					rva		= functions[ordinal];
+					rvaFunc		= functions[ordinal];
 
-					return reinterpret_cast<FARPROC>(reinterpret_cast<BYTE*>(module) + rva);
+					// NEW: Check for forwarded functions
+					if(rvaFunc >= rva && rvaFunc <= rva + size){
+						return get_forwarded_export(reinterpret_cast<char*>(module) + rvaFunc);
+					}
+
+					return reinterpret_cast<FARPROC>(reinterpret_cast<BYTE*>(module) + rvaFunc);
 				}
 			}
 

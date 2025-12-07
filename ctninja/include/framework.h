@@ -22,6 +22,7 @@
 #include <intrin.h>
 #include <dwmapi.h>
 #include <d3d9.h>
+#include <d3d11.h>
 
 #ifdef _IN_
 #undef _IN_
@@ -32,11 +33,6 @@
 #undef _OUT_
 #endif
 #define _OUT_
-
-#ifdef _OPTIONAL_
-#undef _OPTIONAL_
-#endif
-#define _OPTIONAL_
 
 typedef signed char				i8,		*pi8,		*const cpi8;
 typedef unsigned char			u8,		*pu8,		*const cpu8;
