@@ -320,6 +320,17 @@ namespace ctninja
 			return get_value();
 		}
 
+		/*
+			Call operator:
+				Retrieve the pointer (re-rolling the key) and forwards arguments.
+		*/
+		template<typename... Args>
+		auto operator()(Args&&... args)
+		{
+			T func = get_value();
+			return func(std::forward<Args>(args)...);
+		}
+
 	protected:
 
 

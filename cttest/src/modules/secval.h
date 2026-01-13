@@ -14,6 +14,13 @@ namespace secval
 	typedef ctninja::SecureValue32<uint32_t>	SV32_U32;
 	typedef ctninja::SecureValue32<int32_t>		SV32_I32;
 
+	typedef int (__fastcall* fpSecTest)(int);
+
+	int __fastcall sec_test(int i)
+	{
+		return i + 1;
+	}
+
 	class MyTestClass
 	{
 	public:
@@ -27,9 +34,11 @@ namespace secval
 #ifdef _M_X64
 	typedef ctninja::SecureValue64<BYTE*>			SVP_BYTE;
 	typedef ctninja::SecureValue64<MyTestClass*>	SVP_MYTESTCLASS;
+	typedef ctninja::SecureValue64<fpSecTest>		SVP_FNTEST;
 #else
 	typedef ctninja::SecureValue32<BYTE*>			SVP_BYTE;
 	typedef ctninja::SecureValue32<MyTestClass*>	SVP_MYTESTCLASS;
+	typedef ctninja::SecureValue32<fpSecTest>		SVP_FNTEST;
 #endif // _M_X64
 
 	#define ASTEST(t, s) if(!(t)) { test->err = s; return false; }
@@ -242,6 +251,15 @@ namespace secval
 			BCASS(p->m_pubvalue == 5678);
 
 			delete p;
+
+			return true;
+		});
+
+		REGISTER_TEST("ctninja::SecureValue -> Function Pointer", [](UNIT_TEST* test)->bool{
+			SVP_FNTEST	p	= sec_test;
+
+			BCASS(p(1) == 2);
+			BCASS(p(2) == 3);
 
 			return true;
 		});
