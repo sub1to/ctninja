@@ -16,7 +16,7 @@
 // Add the $ and $$ macros
 #define CTNINJA_MAGIC_IMPORT_THROW_ON_FAILURE
 #define CTNINJA_MAGIC_IMPORT
-#include "ctninja.h"
+#include <ctninja/ctninja.h>
 
 // Include test framework
 #include "bctest.h"

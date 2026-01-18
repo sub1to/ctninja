@@ -25,8 +25,7 @@ project "cttest"
 	}
 	
 	vpaths {
-		["src/*"]	= { "cttest", "src" },
-		["externals/*"]	= { "externals" },
+		["src"]	= "src/**",
 	}
 	
 	includedirs {

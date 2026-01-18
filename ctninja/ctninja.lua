@@ -10,8 +10,8 @@ project "ctninja"
 
 	files
 	{
-		"include/**.h",
-		"include/**.hpp",
+		"include/ctninja/**.h",
+		"include/ctninja/**.hpp",
 
 		"src/**.inc",
 		"src/**.asm",
@@ -22,12 +22,12 @@ project "ctninja"
 	}
 	
 	vpaths {
-		["include/*"]		= { "ctninja", "include" },
-		["src/*"]			= { "ctninja", "src" },
+		["include"]		= { "include/ctninja/**" },
+		["src"]			= { "src/**" },
 	}
 	
 	includedirs {
-		"include/",
+		"include/ctninja",
 	}
 	
 	libdirs {
